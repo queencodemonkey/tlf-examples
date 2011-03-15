@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--============================================================================
+
+    Copyright © 2011, Huyen Tue Dao
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are
+    met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the <organization> nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
+      permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+    IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+    THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+    PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR
+    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+    SUCH DAMAGE.
+
+=============================================================================-->
+<!---
+Simple manual TLF example with a sprite, a controller, and simple TextFlow
+input as plain text.
+-->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               minHeight="500" minWidth="400"
+               backgroundColor="0x666666"
+               creationComplete="creationCompleteHandler(event)">
+
+    <fx:Script>
+        <![CDATA[
+            import flashx.textLayout.container.ContainerController;
+            import flashx.textLayout.conversion.TextConverter;
+            import flashx.textLayout.elements.Configuration;
+            import flashx.textLayout.elements.TextFlow;
+            import flashx.textLayout.formats.TextLayoutFormat;
+            
+            import mx.events.FlexEvent;
+            import mx.events.ResizeEvent;
+            
+            //------------------------------------------------------------------
+            //
+            //  P R I V A T E    P R O P E R T I E S 
+            //
+            //------------------------------------------------------------------
+            
+            private var configuration:Configuration = null;
+            
+            private var controller:ContainerController = null;
+            
+            private var textFlow:TextFlow = null;
+            
+            //------------------------------------------------------------------
+            //
+            //   P R I V A T E    M E T H O D S 
+            //
+            //------------------------------------------------------------------
+            
+            private function drawPageComponentBackground():void
+            {
+                pageComponent.graphics.clear();
+                pageComponent.graphics.lineStyle(1, 0x333333);
+                pageComponent.graphics.beginFill(0xFFFFFF, 8.0);
+                pageComponent.graphics.drawRect(0, 0, pageComponent.width, pageComponent.height);
+            }
+            
+            //------------------------------------------------------------------
+            //  EVENT  HANDLERS 
+            //------------------------------------------------------------------
+            
+            private function creationCompleteHandler(event:FlexEvent):void
+            {
+                drawPageComponentBackground();
+                
+                configuration = new Configuration();
+                var initialFormat:TextLayoutFormat = new TextLayoutFormat();
+                initialFormat.fontFamily = "Helvetica";
+                initialFormat.fontSize = 16;
+                initialFormat.lineHeight = "120%";
+                configuration.textFlowInitialFormat = initialFormat;
+                
+                var textFlowSource:String = "\"This has never been done before.\"\n\n\"No. We are, in fact, at the cutting edge of [mess]ing about.\""
+                textFlow = TextConverter.importToFlow(textFlowSource, TextConverter.PLAIN_TEXT_FORMAT,
+                                                      configuration);
+                
+                controller = new ContainerController(pageComponent, pageComponent.width,
+                                                     pageComponent.height);
+                controller.paddingTop = 50;
+                controller.paddingBottom = 50;
+                controller.paddingLeft = 20;
+                controller.paddingRight = 20;
+                
+                textFlow.flowComposer.addController(controller);
+                textFlow.flowComposer.updateAllControllers();
+            }
+            
+            private function pageComponent_resizeHandler(event:ResizeEvent):void
+            {
+                drawPageComponentBackground();
+                if (controller)
+                {
+                    controller.setCompositionSize(pageComponent.width, pageComponent.height);
+                    textFlow.flowComposer.updateAllControllers();
+                }
+            }
+        ]]>
+    </fx:Script>
+
+    <mx:UIComponent id="pageComponent"
+                    top="50" bottom="50" left="50" right="50"
+                    resize="pageComponent_resizeHandler(event)"/>
+</s:Application>

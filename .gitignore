@@ -1,0 +1,13 @@
+# Mac OS X
+.DS_Store
+
+# Eclipse
+.settings/
+.metadata/
+
+# Flex
+html-template/
+bin/
+bin-release/
+bin-debug/
+libs/

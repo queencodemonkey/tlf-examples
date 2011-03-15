@@ -1,0 +1,14 @@
+DOCUMENTATION
+-------------
+
+"QCMTLF" contains Flex 4.1+ projects related to the Adobe Text Layout Framework.
+
+The library project QCMTLFLib contains common components used in examples.
+
+There are also example projects demonstrating usage of Adobe's Text Layout
+Framework including:
+	ManualTLF: examples of using TLF in custom text components as opposed to
+		using Flex Spark components that already utilize TLF.
+	Pagination: example of implementing pagination with TLF.
+	
+Again, please note that most (but not all) examples require QCMTLFLib.swc.
