@@ -15,6 +15,7 @@
   </compiler>
   <applications>
     <application path="Pagination.mxml"/>
+    <application path="Pagination_DataGroup.mxml"/>
   </applications>
   <modules/>
   <buildCSSFiles/>

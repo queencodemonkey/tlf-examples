@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" version="3">
-  <includeClasses/>
+  <includeClasses>
+    <classEntry path="com.queencodemonkey.tlf.components.page.PageItemRenderer"/>
+    <classEntry path="com.queencodemonkey.tlf.components.page.PageComponentItemRenderer"/>
+    <classEntry path="com.queencodemonkey.tlf.madlibs.PresetMadLib"/>
+    <classEntry path="com.queencodemonkey.tlf.madlibs.MadLibManager"/>
+    <classEntry path="com.queencodemonkey.tlf.madlibs.MadLibUtil"/>
+  </includeClasses>
   <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>

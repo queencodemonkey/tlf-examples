@@ -6,6 +6,8 @@
 .metadata/
 
 # Flex
+.actionScriptProperties
+.flexProperties
 html-template/
 bin/
 bin-release/

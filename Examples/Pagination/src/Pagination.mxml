@@ -37,7 +37,7 @@
 
     <fx:Declarations>
         <fx:XML id="textFlowData"
-                source="assets/data/hhga.xml"/>
+                source="assets/data/goodomens.xml"/>
     </fx:Declarations>
 
     <fx:Script>
