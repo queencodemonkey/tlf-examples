@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" version="3">
   <includeClasses>
-    <classEntry path="com.queencodemonkey.tlf.components.page.PageItemRenderer"/>
-    <classEntry path="com.queencodemonkey.tlf.components.page.PageComponentItemRenderer"/>
-    <classEntry path="com.queencodemonkey.tlf.madlibs.PresetMadLib"/>
-    <classEntry path="com.queencodemonkey.tlf.madlibs.MadLibManager"/>
-    <classEntry path="com.queencodemonkey.tlf.madlibs.MadLibUtil"/>
+    <classEntry path="com.queencodemonkey.tlf.page.components.PageComponentItemRenderer"/>
+    <classEntry path="com.queencodemonkey.tlf.madlibs.components.MadLib"/>
+    <classEntry path="com.queencodemonkey.tlf.madlibs.textLayout.edit.MadLibManager"/>
+    <classEntry path="com.queencodemonkey.tlf.madlibs.textLayout.utils.MadLibUtil"/>
+    <classEntry path="com.queencodemonkey.tlf.madlibs.skins.MadLibSkin"/>
+    <classEntry path="com.queencodemonkey.tlf.sycdct.ExampleHeader"/>
+    <classEntry path="com.queencodemonkey.tlf.madlibs.textLayout.operations.InsertMadLibBlank"/>
+    <classEntry path="com.queencodemonkey.tlf.madlibs.textLayout.edit.MadLibEditManager"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

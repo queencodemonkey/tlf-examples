@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--============================================================================
+
+	Copyright © 2011, Huyen Tue Dao
+	All rights reserved.
+	
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of Huyen Tue Dao nor the names of other contributors
+	  may be used to endorse or promote products derived from this software
+	  without specific prior written permission.
+	
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+	IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+	THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+	PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL HUYEN TUE DAO BE LIABLE FOR
+	ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+	LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+	OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+	SUCH DAMAGE.
+
+=============================================================================-->
+<!--- 
+	Title header used in examples for presentation "Seriously, you can do cool
+	things: Getting Advanced in the Text Layout Framework."
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx">
+
+    <fx:Script>
+        <![CDATA[
+            //------------------------------------------------------------------
+            //
+            //   P U B L I C    P R O P E R T I E S 
+            //
+            //------------------------------------------------------------------
+
+            [Bindable]
+            public var exampleTitle:TextFlow = null;
+        ]]>
+    </fx:Script>
+
+    <s:layout>
+        <s:HorizontalLayout paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10"
+                            horizontalAlign="left"
+                            verticalAlign="bottom"
+                            gap="20"/>
+    </s:layout>
+
+    <s:RichText id="exampleTitleText"
+                top="10" bottom="10" right="0"
+                textFlow="{exampleTitle}"/>
+
+    <s:Line height="100%"
+            xFrom="0" xTo="0" yFrom="0" yTo="1">
+        <s:stroke>
+            <s:SolidColorStroke color="0xCCCCCC"
+                                weight="1"/>
+        </s:stroke>
+    </s:Line>
+
+    <s:RichText id="sycdctTitleText"
+                top="20" bottom="20">
+        <s:textFlow>
+            <s:TextFlow color="0x333333"
+                        fontFamily="Adobe Caslon Pro, Georgia, Times New Roman, serif">
+                <s:p>
+                    <s:span fontSize="14">Seriously, you can do cool things.</s:span>
+                    <s:br/>
+                    <s:span fontSize="24">Getting Advanced with the Text Layout Framework</s:span>
+                </s:p>
+            </s:TextFlow>
+        </s:textFlow>
+    </s:RichText>
+
+</s:Group>

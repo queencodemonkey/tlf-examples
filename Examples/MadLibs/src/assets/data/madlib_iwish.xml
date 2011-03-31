@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TextFlow xmlns="http://ns.adobe.com/textLayout/2008">
-	<p>I wish I was a little bit <span id="madlib_blank_01">adjective ending in -er</span>.</p>
-	<p>I wish I was a <span id="madlib_blank_02">noun</span>.</p>
-	<p>I wish I had a <span id="madlib_blank_03">noun</span> who <span id="madlib_blank_04">past participle</span> good.</p>
-	<p>I would <span id="madlib_blank_05">noun</span> <span id="madlib_blank_06">pronoun</span>.</p>
-	<p>I wish I had a <span id="madlib_blank_06"></span> in a <span id="madlib_blank_07">noun</span> with a <span id="madlib_blank_08">noun</span></p>
-	<p>and a six four <span id="madlib_blank_">noun</span>.</p>
+	<p><span>I wish I was a little bit </span><span id="madlib_blank_01">adjective ending in -er</span><span>.</span></p>
+	<p><span>I wish I was a </span><span id="madlib_blank_02">noun</span>.</p>
+	<p><span>I wish I had a </span><span id="madlib_blank_03">noun</span><span> who </span><span id="madlib_blank_04">past participle</span><span> good.</span></p>
+	<p><span>I would </span><span id="madlib_blank_05">verb</span><span> </span><span id="madlib_blank_06">pronoun</span><span>.</span></p>
+	<p><span>I wish I had a </span><span id="madlib_blank_07">noun</span><span> in a </span><span id="madlib_blank_08">noun</span><span> with a </span><span id="madlib_blank_09">noun</span></p>
+	<p><span>and a six four </span><span id="madlib_blank_10">noun</span><span>.</span></p>
 </TextFlow>

@@ -5,22 +5,20 @@
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are
-    met:
+    modification, are permitted provided that the following conditions are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
     * Redistributions in binary form must reproduce the above copyright
       notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written
-      permission.
+    * Neither the name of Huyen Tue Dao nor the names of other contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
 
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-    IS"AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+    IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
     THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-    PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR
+    PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL HUYEN TUE DAO BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
     DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
     SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
@@ -42,8 +40,8 @@
 
     <fx:Script>
         <![CDATA[
-            import com.queencodemonkey.tlf.components.page.PageComponent;
-            
+            import com.queencodemonkey.tlf.page.components.PageComponent;
+
             import flashx.textLayout.conversion.TextConverter;
             import flashx.textLayout.edit.EditManager;
             import flashx.textLayout.elements.TextFlow;
@@ -61,7 +59,6 @@
              * Default page width.
              */
             private static const PAGE_WIDTH:Number = 400;
-
 
             //------------------------------------------------------------------
             //
@@ -87,7 +84,13 @@
              * TextFlow instance rendered in pages.
              */
             private var textFlow:TextFlow = null;
-			
+
+            //------------------------------------------------------------------
+            //
+            //  P U B L I C    M E T H O D S 
+            //
+            //------------------------------------------------------------------
+
             //------------------------------------------------------------------
             //
             //   P R I V A T E    M E T H O D S 
@@ -169,15 +172,13 @@
                 {
                     addPageButton.enabled = false;
                     removePageButton.enabled = false;
-                    textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE,
-                                              textFlow_updateCompleteHandler);
+                    textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
                 }
                 else
                 {
                     addPageButton.enabled = true;
                     removePageButton.enabled = pageGroup.numElements > 0;
-                    textFlow.removeEventListener(UpdateCompleteEvent.UPDATE_COMPLETE,
-                                                 textFlow_updateCompleteHandler);
+                    textFlow.removeEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
                 }
             }
 
@@ -213,15 +214,13 @@
             {
                 if (textFlow)
                 {
-                    textFlow.removeEventListener(UpdateCompleteEvent.UPDATE_COMPLETE,
-                                                 textFlow_updateCompleteHandler);
+                    textFlow.removeEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
                 }
                 if (pageGroup.numElements > 0)
                 {
                     removeAllPages();
                 }
-                textFlow = TextConverter.importToFlow(textFlowData, TextConverter.
-                                                      TEXT_LAYOUT_FORMAT);
+                textFlow = TextConverter.importToFlow(textFlowData, TextConverter.TEXT_LAYOUT_FORMAT);
                 if (autoPaginateCheckBox.selected)
                 {
                     var page:PageComponent = addPage();
@@ -229,8 +228,7 @@
                     {
                         page = addPage();
                     }
-                    textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE,
-                                              textFlow_updateCompleteHandler);
+                    textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
                 }
                 else
                 {

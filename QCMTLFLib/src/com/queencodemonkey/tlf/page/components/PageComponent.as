@@ -1,37 +1,56 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © Houghton Mifflin Harcourt 2010.  
-//  All Rights Reserved.  
-//  This software and documentation is the confidential and proprietary  
-//  information of Houghton Mifflin Harcourt ("Confidential Information").  
-//  You shall not disclose such Confidential Information and shall use  
-//  it only in accordance with the terms of the license agreement you  
-//  entered into with Houghton Mifflin Harcourt.  
-//  Unauthorized reproduction or distribution of this Confidential  
-//  Information, or any portion of it, may result in severe civil and  
-//  criminal penalties.  
+//  Copyright © 2011, Huyen Tue Dao 
+//  All rights reserved. 
+// 
+//  Redistribution and use in source and binary forms, with or without 
+//  modification, are permitted provided that the following conditions are met: 
+//      * Redistributions of source code must retain the above copyright 
+//        notice, this list of conditions and the following disclaimer. 
+//      * Redistributions in binary form must reproduce the above copyright 
+//        notice, this list of conditions and the following disclaimer in the 
+//        documentation and/or other materials provided with the distribution. 
+//      * Neither the name of Huyen Tue Dao nor the names of other contributors 
+//        may be used to endorse or promote products derived from this software 
+//        without specific prior written permission. 
+// 
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+//  IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+//  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL HUYEN TUE DAO BE LIABLE FOR 
+//  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+//  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+//  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+//  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+//  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
+//  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
+//  SUCH DAMAGE. 
 //
 ////////////////////////////////////////////////////////////////////////////////
-package com.queencodemonkey.tlf.components.page
+package com.queencodemonkey.tlf.page.components
 {
-    import com.queencodemonkey.tlf.skins.page.PageComponentSkin;
-    
+    import com.queencodemonkey.tlf.page.skins.PageComponentSkin;
+
     import flash.display.Sprite;
-    
+
     import flashx.textLayout.container.ContainerController;
     import flashx.textLayout.container.ScrollPolicy;
     import flashx.textLayout.elements.TextFlow;
-    
+
+    import mx.core.FlexGlobals;
+
     import mx.core.FlexGlobals;
     import mx.events.MoveEvent;
     import mx.events.ResizeEvent;
     import mx.styles.CSSStyleDeclaration;
-    
+
+    import mx.styles.CSSStyleDeclaration;
+
     import spark.components.supportClasses.SkinnableComponent;
 
     /**
      * The Page class is a skinnable component that represents and displays
-	 * a page worth of text.
+     * a page worth of text.
      *
      * @author Huyen Tue Dao
      */
@@ -39,51 +58,47 @@ package com.queencodemonkey.tlf.components.page
     {
         private static var classConstructed:Boolean = setDefaultStyles();
 
+        /**
+         * @private
+         * Static variable to force setting of default styles.
+         */
+        private static var defaultStylesSet:Boolean = setDefaultStyles();
+
         //------------------------------------------------------------------
         //
         // P R I V A T E    S T A T I C    M E T H O D S 
         //
         //------------------------------------------------------------------
 
-		import mx.core.FlexGlobals;
-		
-		import mx.styles.CSSStyleDeclaration;
-		
-		/**
-		 * @private
-		 * Static variable to force setting of default styles.
-		 */
-		private static var defaultStylesSet:Boolean = setDefaultStyles();
-		
-		/**
-		 * @private
-		 * Sets default values for style properties.
-		 */
-		private static function setDefaultStyles():Boolean
-		{
-			var pageStyles:CSSStyleDeclaration = FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration( "com.queencodemonkey.tlf.components.page.PageComponent" );
-			
-			if ( !pageStyles  )
-			{
-				pageStyles = new CSSStyleDeclaration();
-			}
-			pageStyles.defaultFactory = function():void
-			{
-				this.skinClass = PageComponentSkin;
-			};
-			
-			FlexGlobals.topLevelApplication.styleManager.setStyleDeclaration( "com.queencodemonkey.tlf.components.page.PageComponent" , pageStyles, true );
-			
-			return true;
-		}
-		
+        /**
+         * @private
+         * Sets default values for style properties.
+         */
+        private static function setDefaultStyles():Boolean
+        {
+            var pageStyles:CSSStyleDeclaration = FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration("com.queencodemonkey.tlf.page.components.PageComponent");
+
+            if (!pageStyles)
+            {
+                pageStyles = new CSSStyleDeclaration();
+            }
+            pageStyles.defaultFactory = function():void
+            {
+                this.skinClass = PageComponentSkin;
+            };
+
+            FlexGlobals.topLevelApplication.styleManager.setStyleDeclaration("com.queencodemonkey.tlf.page.components.PageComponent", pageStyles, true);
+
+            return true;
+        }
+
         //------------------------------------------------------------------
         //
         //   S K I N    P A R T S 
         //
         //------------------------------------------------------------------
 
-        [SkinPart( required="true" )]
+        [SkinPart(required="true")]
         /**
          * The sprite that actually holds rendered text.
          */
@@ -141,7 +156,7 @@ package com.queencodemonkey.tlf.components.page
          */
         public function isLastPage():Boolean
         {
-            return containerController.textFlow && ( containerController.absoluteStart + containerController.textLength ) >= containerController.textFlow.textLength;
+            return containerController.textFlow && (containerController.absoluteStart + containerController.textLength) >= containerController.textFlow.textLength;
         }
 
         /**
@@ -149,16 +164,16 @@ package com.queencodemonkey.tlf.components.page
          * content.
          * @param textFlow A TextFlow instance to connect to the page.
          */
-        public function linkToTextFlow( textFlow:TextFlow ):void
+        public function linkToTextFlow(textFlow:TextFlow):void
         {
-            if ( !containerController || containerController.textFlow != textFlow )
+            if (!containerController || containerController.textFlow != textFlow)
             {
-                containerController = new ContainerController( container, container.width, container.height );
+                containerController = new ContainerController(container, container.width, container.height);
                 // Need to set verticalScrollPolicy to off so that no partial
                 // lines are laid out in a container: a page should only be
                 // assigned as many text lines as it can display.
                 containerController.verticalScrollPolicy = ScrollPolicy.OFF;
-                textFlow.flowComposer.addController( containerController );
+                textFlow.flowComposer.addController(containerController);
                 textFlow.flowComposer.updateAllControllers();
             }
         }
@@ -172,17 +187,17 @@ package com.queencodemonkey.tlf.components.page
          *
          * @param textFlow A TextFlow instance from which to unlink the page.
          */
-        public function unlinkFromTextFlow( textFlow:TextFlow = null ):void
+        public function unlinkFromTextFlow(textFlow:TextFlow = null):void
         {
-            if ( containerController && ( !textFlow || containerController.textFlow == textFlow ) )
+            if (containerController && (!textFlow || containerController.textFlow == textFlow))
             {
-                for ( var i:int = container.numChildren - 1; i >= 0; i-- )
+                for (var i:int = container.numChildren - 1; i >= 0; i--)
                 {
-                    container.removeChildAt( i );
+                    container.removeChildAt(i);
                 }
-                if ( !textFlow )
+                if (!textFlow)
                     textFlow = containerController.textFlow;
-                textFlow.flowComposer.removeController( containerController );
+                textFlow.flowComposer.removeController(containerController);
                 textFlow.flowComposer.updateAllControllers();
                 containerController = null;
             }
@@ -197,26 +212,26 @@ package com.queencodemonkey.tlf.components.page
         /**
          * @inheritDoc
          */
-        override protected function partAdded( partName:String, instance:Object ):void
+        override protected function partAdded(partName:String, instance:Object):void
         {
-            super.partAdded( partName, instance );
-            if ( instance == container )
+            super.partAdded(partName, instance);
+            if (instance == container)
             {
-                container.addEventListener( ResizeEvent.RESIZE, container_resizeHandler );
-                container.addEventListener( MoveEvent.MOVE, container_moveHandler );
+                container.addEventListener(ResizeEvent.RESIZE, container_resizeHandler);
+                container.addEventListener(MoveEvent.MOVE, container_moveHandler);
             }
         }
 
         /**
          * @inheritDoc
          */
-        override protected function partRemoved( partName:String, instance:Object ):void
+        override protected function partRemoved(partName:String, instance:Object):void
         {
-            super.partRemoved( partName, instance );
-            if ( instance == container )
+            super.partRemoved(partName, instance);
+            if (instance == container)
             {
-                container.removeEventListener( ResizeEvent.RESIZE, container_resizeHandler );
-                container.removeEventListener( MoveEvent.MOVE, container_moveHandler );
+                container.removeEventListener(ResizeEvent.RESIZE, container_resizeHandler);
+                container.removeEventListener(MoveEvent.MOVE, container_moveHandler);
             }
         }
 
@@ -232,7 +247,7 @@ package com.queencodemonkey.tlf.components.page
          */
         private function resetControllerDimensions():void
         {
-            containerController.setCompositionSize( container.width, container.height );
+            containerController.setCompositionSize(container.width, container.height);
             containerController.textFlow.flowComposer.updateAllControllers();
         }
 
@@ -244,9 +259,9 @@ package com.queencodemonkey.tlf.components.page
          * @private
          * Resets the composition size when the container has moved.
          */
-        private function container_moveHandler( event:MoveEvent ):void
+        private function container_moveHandler(event:MoveEvent):void
         {
-            if ( containerController )
+            if (containerController)
             {
                 resetControllerDimensions();
             }
@@ -256,9 +271,9 @@ package com.queencodemonkey.tlf.components.page
          * @private
          * Resets the composition size when the container has resized.
          */
-        private function container_resizeHandler( event:ResizeEvent ):void
+        private function container_resizeHandler(event:ResizeEvent):void
         {
-            if ( containerController )
+            if (containerController)
             {
                 resetControllerDimensions();
             }
