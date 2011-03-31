@@ -10,5 +10,7 @@ Framework including:
 	ManualTLF: examples of using TLF in custom text components as opposed to
 		using Flex Spark components that already utilize TLF.
 	Pagination: example of implementing pagination with TLF.
+	MadLibs: examples of incorporating other Flex components with TLF in
+		custom components.
 	
 Again, please note that most (but not all) examples require QCMTLFLib.swc.
