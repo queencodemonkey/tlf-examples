@@ -179,14 +179,14 @@ package com.queencodemonkey.tlf.madlibs.components
          */
         private static function setDefaultStyles():Boolean
         {
-            var presetMadlibStyleDeclaration:CSSStyleDeclaration =
+            var madLibStyles:CSSStyleDeclaration =
                 FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration("com.queencodemonkey.tlf.madlibs.components.MadLib");
 
-            if (!presetMadlibStyleDeclaration)
+            if (!madLibStyles)
             {
-                presetMadlibStyleDeclaration = new CSSStyleDeclaration();
+                madLibStyles = new CSSStyleDeclaration();
             }
-            presetMadlibStyleDeclaration.defaultFactory = function():void
+            madLibStyles.defaultFactory = function():void
             {
                 this.skinClass = MadLibSkin;
                 this.blankStyleName = DEFAULT_BLANK_STYLE_NAME;
@@ -205,17 +205,17 @@ package com.queencodemonkey.tlf.madlibs.components
             };
 
             FlexGlobals.topLevelApplication.styleManager.setStyleDeclaration("com.queencodemonkey.tlf.madlibs.components.MadLib",
-                                                                             presetMadlibStyleDeclaration,
+                                                                             madLibStyles,
                                                                              true);
 
-            var madLibBlankStyleDeclaration:CSSStyleDeclaration =
+            var madLibBlankStyles:CSSStyleDeclaration =
                 FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration("." + DEFAULT_BLANK_STYLE_NAME);
 
-            if (!madLibBlankStyleDeclaration)
+            if (!madLibBlankStyles)
             {
-                madLibBlankStyleDeclaration = new CSSStyleDeclaration();
+                madLibBlankStyles = new CSSStyleDeclaration();
             }
-            madLibBlankStyleDeclaration.defaultFactory = function():void
+            madLibBlankStyles.defaultFactory = function():void
             {
                 this.color = 0x666666;
                 this.fontFamily = "Andale Mono, Courier New, Courier, monospace";
@@ -226,7 +226,7 @@ package com.queencodemonkey.tlf.madlibs.components
             };
 
             FlexGlobals.topLevelApplication.styleManager.setStyleDeclaration("." + DEFAULT_BLANK_STYLE_NAME,
-                                                                             madLibBlankStyleDeclaration,
+                                                                             madLibBlankStyles,
                                                                              true);
 
             return true;

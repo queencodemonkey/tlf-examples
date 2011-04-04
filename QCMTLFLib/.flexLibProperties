@@ -9,6 +9,10 @@
     <classEntry path="com.queencodemonkey.tlf.sycdct.ExampleHeader"/>
     <classEntry path="com.queencodemonkey.tlf.madlibs.textLayout.operations.InsertMadLibBlank"/>
     <classEntry path="com.queencodemonkey.tlf.madlibs.textLayout.edit.MadLibEditManager"/>
+    <classEntry path="com.queencodemonkey.tlf.bookmarks.components.LineNumberColumn"/>
+    <classEntry path="com.queencodemonkey.tlf.bookmarks.events.LineNumberColumnEvent"/>
+    <classEntry path="com.queencodemonkey.tlf.bookmarks.components.BookmarkColumn"/>
+    <classEntry path="com.queencodemonkey.tlf.bookmarks.components.supportClasses.Bookmark"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

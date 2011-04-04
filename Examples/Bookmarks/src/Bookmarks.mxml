@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--============================================================================
+
+    Copyright © 2011, Huyen Tue Dao
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Huyen Tue Dao nor the names of other contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+    IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+    THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+    PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL HUYEN TUE DAO BE LIABLE FOR
+    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+    SUCH DAMAGE.
+
+=============================================================================-->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               creationComplete="creationCompleteHandler(event)" xmlns:components="com.queencodemonkey.tlf.bookmarks.components.*">
+
+    <fx:Declarations>
+        <fx:XML id="textFlowData"
+                source="assets/data/how_many_angels_can_dance.xml"/>
+    </fx:Declarations>
+
+    <fx:Script>
+        <![CDATA[
+            import com.queencodemonkey.tlf.bookmarks.events.LineNumberColumnEvent;
+
+            import flash.text.engine.ElementFormat;
+            import flash.text.engine.FontDescription;
+            import flash.text.engine.TextBaseline;
+            import flash.text.engine.TextLine;
+
+            import flashx.textLayout.compose.TextFlowLine;
+            import flashx.textLayout.container.TextContainerManager;
+            import flashx.textLayout.conversion.TextConverter;
+            import flashx.textLayout.edit.ISelectionManager;
+            import flashx.textLayout.edit.SelectionState;
+            import flashx.textLayout.elements.Configuration;
+            import flashx.textLayout.elements.TextFlow;
+            import flashx.textLayout.events.SelectionEvent;
+            import flashx.textLayout.events.UpdateCompleteEvent;
+            import flashx.textLayout.formats.TextLayoutFormat;
+            import flashx.textLayout.formats.WhiteSpaceCollapse;
+
+            import mx.events.FlexEvent;
+
+            //------------------------------------------------------------------
+            //
+            //   P U B L I C    P R O P E R T I E S 
+            //
+            //------------------------------------------------------------------
+
+            public var lineHeight:Number = NaN;
+
+            //------------------------------------------------------------------
+            //
+            //  P R I V A T E    P R O P E R T I E S 
+            //
+            //------------------------------------------------------------------
+
+            private var configuration:Configuration = null;
+
+            private var highlightSprite:Sprite = null;
+
+            private var highlightedLineIndex:int = -1;
+
+            private var textContainerManager:TextContainerManager = null;
+
+            private var textFlow:TextFlow = null;
+
+            //------------------------------------------------------------------
+            //
+            //  P U B L I C    M E T H O D S 
+            //
+            //------------------------------------------------------------------
+
+            //------------------------------------------------------------------
+            //
+            //   P R I V A T E    M E T H O D S 
+            //
+            //------------------------------------------------------------------
+
+            private function highlightLine(index:int):void
+            {
+                if (highlightedLineIndex != -1)
+                    unhighlightLine(highlightedLineIndex);
+                highlightedLineIndex = index;
+                var textFlowLine:TextFlowLine = textFlow.flowComposer.getLineAt(index);
+                if (textFlowLine)
+                {
+                    var textLine:TextLine = textFlowLine.getTextLine(true);
+                    if (textLine)
+                    {
+                        textLine.addChild(highlightSprite);
+
+                        var graphics:Graphics = highlightSprite.graphics;
+                        graphics.clear();
+                        graphics.beginFill(0x00FFFF, 0.1);
+                        graphics.drawRect(0, 0 - textLine.ascent + (textLine.textHeight - lineHeight) * 0.5, page.width, lineHeight);
+                        graphics.endFill();
+                    }
+
+                }
+            }
+
+            private function lineNumberColumn_lineNumberSelected(event:LineNumberColumnEvent):void
+            {
+                var lineNumber:int = event.lineNumber;
+                var selectionManager:ISelectionManager = textContainerManager.beginInteraction();
+                var textFlowLine:TextFlowLine = textFlow.flowComposer.getLineAt(lineNumber - 1);
+                selectionManager.selectRange(textFlowLine.absoluteStart, textFlowLine.absoluteStart);
+                selectionManager.setFocus();
+                textContainerManager.updateContainer();
+            }
+
+            private function unhighlightLine(index:int = -1):void
+            {
+                if (index == -1)
+                    index = highlightedLineIndex;
+                if (index != -1)
+                {
+                    var parent:DisplayObjectContainer = highlightSprite.parent;
+                    if (parent)
+                        parent.removeChild(highlightSprite);
+                }
+            }
+
+            //------------------------------------------------------------------
+            //  EVENT  HANDLERS 
+            //------------------------------------------------------------------
+
+            private function creationCompleteHandler(event:FlexEvent):void
+            {
+                configuration = new Configuration();
+                var initialFormat:TextLayoutFormat = new TextLayoutFormat();
+                initialFormat.firstBaselineOffset = 14;
+                initialFormat.alignmentBaseline = TextBaseline.DESCENT;
+                initialFormat.dominantBaseline = TextBaseline.DESCENT;
+                initialFormat.fontFamily = "Courier New";
+                initialFormat.fontSize = 14;
+                initialFormat.whiteSpaceCollapse = WhiteSpaceCollapse.PRESERVE;
+                configuration.textFlowInitialFormat = initialFormat;
+
+                lineHeight = 16.8;
+
+                textContainerManager = new TextContainerManager(page, configuration);
+
+                textFlow = TextConverter.importToFlow(textFlowData, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
+                textContainerManager.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textContainerManager_updateCompleteHandler);
+                textContainerManager.addEventListener(SelectionEvent.SELECTION_CHANGE, textContainerManager_selectionChangeHandler);
+                textContainerManager.setTextFlow(textFlow);
+                textContainerManager.compositionWidth = page.width;
+                textContainerManager.compositionHeight = page.height;
+                textContainerManager.updateContainer();
+
+                var elementFormat:ElementFormat = new ElementFormat(new FontDescription(initialFormat.fontFamily));
+                elementFormat.fontSize = initialFormat.fontSize;
+                lineNumberColumn.format = elementFormat;
+
+                highlightSprite = new Sprite();
+            }
+
+            private function textContainerManager_selectionChangeHandler(event:SelectionEvent):void
+            {
+                var selectionState:SelectionState = event.selectionState;
+                var textFlow:TextFlow = selectionState.textFlow;
+                var startLineIndex:int = textFlow.flowComposer.findLineIndexAtPosition(selectionState.absoluteStart);
+                var endLineIndex:int = textFlow.flowComposer.findLineIndexAtPosition(selectionState.absoluteEnd);
+                if (startLineIndex == endLineIndex)
+                {
+                    highlightLine(startLineIndex);
+                }
+                else
+                {
+                    unhighlightLine();
+                }
+            }
+
+            private function textContainerManager_updateCompleteHandler(event:UpdateCompleteEvent):void
+            {
+                lineNumberColumn.numLines = textContainerManager.numLines;
+            }
+            XML.ignoreWhitespace = false;
+        ]]>
+    </fx:Script>
+
+    <s:Scroller id="scroller"
+                top="0" bottom="0" left="0" right="15">
+
+        <s:Group id="scrollerGroup"
+                 top="0" bottom="0" left="0" right="0">
+
+            <components:LineNumberColumn id="lineNumberColumn"
+                                         width="30"
+                                         lineHeight="16.8" lineNumberSelected="lineNumberColumn_lineNumberSelected(event)"/>
+
+            <s:SpriteVisualElement id="page"
+                                   top="0" bottom="0" left="30" right="0"/>
+
+        </s:Group>
+
+    </s:Scroller>
+
+
+
+</s:Application>

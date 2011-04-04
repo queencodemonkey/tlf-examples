@@ -12,5 +12,8 @@ Framework including:
 	Pagination: example of implementing pagination with TLF.
 	MadLibs: examples of incorporating other Flex components with TLF in
 		custom components.
+	Bookmarks: example of utilizing FTE level properties and methods in
+		conjunction with full TLF to manipulate and decorate text on a
+		line-by-line basis. 
 	
 Again, please note that most (but not all) examples require QCMTLFLib.swc.
