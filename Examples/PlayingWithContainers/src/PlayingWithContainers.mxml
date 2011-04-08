@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--============================================================================
+
+    Copyright © 2011, Huyen Tue Dao
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Huyen Tue Dao nor the names of other contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+    IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+    THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+    PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL HUYEN TUE DAO BE LIABLE FOR
+    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+    SUCH DAMAGE.
+
+=============================================================================-->
+<!--- Example application for demonstrating container manipulation with TLF. -->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               creationComplete="creationCompleteHandler(event)">
+
+    <fx:Script>
+        <![CDATA[
+			import flashx.textLayout.compose.IFlowComposer;
+			import flashx.textLayout.compose.StandardFlowComposer;
+			import flashx.textLayout.container.ContainerController;
+			import flashx.textLayout.container.ScrollPolicy;
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.elements.Configuration;
+			import flashx.textLayout.elements.TextFlow;
+			import flashx.textLayout.events.TextLayoutEvent;
+			import flashx.textLayout.formats.TextAlign;
+			import flashx.textLayout.formats.TextLayoutFormat;
+			import flashx.textLayout.tlf_internal;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.utils.TextFlowUtil;
+			
+			use namespace tlf_internal;
+
+            //------------------------------------------------------------------
+            //
+            //  P R I V A T E    P R O P E R T I E S 
+            //
+            //------------------------------------------------------------------
+
+            private var bottomController:ContainerController = null;
+
+            private var bottomTextFlow:TextFlow = null;
+
+            private var configuration:Configuration = null;
+
+            private var middleController:ContainerController = null;
+
+            private var middleTextFlow:TextFlow = null;
+
+            private var mouseDownStartY:Number = NaN;
+
+            private var topController:ContainerController = null;
+
+            private var topTextFlow:TextFlow = null;
+
+            //------------------------------------------------------------------
+            //  EVENT  HANDLERS 
+            //------------------------------------------------------------------
+
+            private function creationCompleteHandler(event:FlexEvent):void
+            {
+                configuration = new Configuration();
+                var initialFormat:TextLayoutFormat = new TextLayoutFormat();
+                initialFormat.textAlign = TextAlign.CENTER;
+                initialFormat.fontSize = 24;
+                configuration.textFlowInitialFormat = initialFormat;
+                topTextFlow = TextConverter.importToFlow(clockData, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
+                bottomTextFlow = topTextFlow.deepCopy() as TextFlow;
+
+                configuration = new Configuration();
+                initialFormat = new TextLayoutFormat();
+                initialFormat.textAlign = TextAlign.CENTER;
+                initialFormat.fontSize = 48;
+                configuration.textFlowInitialFormat = initialFormat;
+                middleTextFlow = TextConverter.importToFlow(clockData, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
+
+                topTextFlow.addEventListener(TextLayoutEvent.SCROLL, topTextFlow_scrollHandler);
+
+//				var flowComposer:IFlowComposer = textFlow.flowComposer;
+                topTextFlow.flowComposer.addController(topController = new ContainerController(topContainer, topContainer.width, topContainer.height));
+                middleTextFlow.flowComposer.addController(middleController = new ContainerController(middleContainer, middleContainer.width, middleContainer.height));
+                bottomTextFlow.flowComposer.addController(bottomController = new ContainerController(bottomContainer, bottomContainer.width, bottomContainer.height));
+
+                topController.verticalScrollPolicy = ScrollPolicy.ON;
+                middleController.verticalScrollPolicy = ScrollPolicy.ON;
+                bottomController.verticalScrollPolicy = ScrollPolicy.ON;
+
+                topTextFlow.flowComposer.updateAllControllers();
+                middleTextFlow.flowComposer.updateAllControllers();
+                bottomTextFlow.flowComposer.updateAllControllers();
+
+                addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+            }
+
+            private function mouseDownHandler(event:MouseEvent):void
+            {
+                mouseDownStartY = event.localY;
+                addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+                addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+            }
+
+            private function mouseMoveHandler(event:MouseEvent):void
+            {
+                var diffY:Number = event.localY - mouseDownStartY;
+                topController.verticalScrollPosition += diffY >> 1;
+            }
+
+            private function mouseUpHandler(event:MouseEvent):void
+            {
+                removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+                removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+            }
+
+            private function topTextFlow_scrollHandler(event:TextLayoutEvent):void
+            {
+				var topLastLineIndex:int = topTextFlow.flowComposer.findLineIndexAtPosition(topController.getLastVisibleLine().absoluteStart);
+				var middleFirstLineIndex:int = middleTextFlow.flowComposer.findLineIndexAtPosition(middleController.getFirstVisibleLine().absoluteStart);
+				var middleLastLineIndex:int = middleTextFlow.flowComposer.findLineIndexAtPosition(middleController.getLastVisibleLine().absoluteStart);
+				var bottomFirstLineIndex:int = bottomTextFlow.flowComposer.findLineIndexAtPosition(bottomController.getFirstVisibleLine().absoluteStart);
+				var bottomLastLineIndex:int = bottomTextFlow.flowComposer.findLineIndexAtPosition(bottomController.getLastVisibleLine().absoluteStart);
+				trace('topTextFlow_scrollHandler: ' + topLastLineIndex + ':' + middleController.verticalScrollPosition + "+" + (topLastLineIndex - middleFirstLineIndex + 1));
+				middleController.verticalScrollPosition += middleController.getScrollDelta(topLastLineIndex - middleFirstLineIndex + 1);
+            }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <fx:XML id="clockData"
+                source="assets/data/clock_data.xml"/>
+    </fx:Declarations>
+
+    <s:Group>
+        <s:layout>
+            <s:VerticalLayout horizontalAlign="center"
+                              gap="-1"/>
+        </s:layout>
+
+        <s:Rect id="topBackground"
+                width="300" height="100">
+            <s:stroke>
+                <s:SolidColorStroke color="0x333333"
+                                    weight="1"/>
+            </s:stroke>
+        </s:Rect>
+
+        <s:Rect id="middleBackground"
+                width="400" height="200">
+            <s:stroke>
+                <s:SolidColorStroke color="0x333333"
+                                    weight="1"/>
+            </s:stroke>
+        </s:Rect>
+
+        <s:Rect id="bottomBackground"
+                width="300" height="100">
+            <s:stroke>
+                <s:SolidColorStroke color="0x333333"
+                                    weight="1"/>
+            </s:stroke>
+        </s:Rect>
+    </s:Group>
+
+    <s:Group>
+        <s:layout>
+            <s:VerticalLayout horizontalAlign="center"
+                              gap="0"/>
+        </s:layout>
+
+        <s:SpriteVisualElement id="topContainer"
+                               width="300" height="100"/>
+
+        <s:SpriteVisualElement id="middleContainer"
+                               width="400" height="200"/>
+
+        <s:SpriteVisualElement id="bottomContainer"
+                               width="300" height="100"/>
+    </s:Group>
+
+
+</s:Application>

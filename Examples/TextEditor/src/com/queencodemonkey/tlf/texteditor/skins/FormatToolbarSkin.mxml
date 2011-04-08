@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--============================================================================
+
+	Copyright © 2011, Huyen Tue Dao
+	All rights reserved.
+	
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of Huyen Tue Dao nor the names of other contributors
+	  may be used to endorse or promote products derived from this software
+	  without specific prior written permission.
+	
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+	IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+	THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+	PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL HUYEN TUE DAO BE LIABLE FOR
+	ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+	LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+	OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+	SUCH DAMAGE.
+
+=============================================================================-->
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:mx="library://ns.adobe.com/flex/mx">
+
+    <!-- Host component -->
+    <fx:Metadata>
+		[HostComponent("com.queencodemonkey.tlf.texteditor.components.FormatToolbar")]
+	</fx:Metadata>
+	
+	<s:Rect id="borderRectangle"
+			width="100%" height="100%">
+		<s:stroke>
+			<s:SolidColorStroke color="0x666666"
+								weight="1"/>
+		</s:stroke>
+		<s:fill>
+			<s:SolidColor color="0xCCCCCC"/>
+		</s:fill>
+	</s:Rect>
+
+    <s:Group id="controlsGroup"
+			 top="10" bottom="10" left="20" right="20">
+
+        <s:layout>
+            <s:HorizontalLayout horizontalAlign="left" verticalAlign="middle"
+                                gap="10"/>
+        </s:layout>
+
+        <s:DropDownList id="fontFamily"
+                        width="175"/>
+
+        <s:DropDownList id="fontSize"
+                        width="60"/>
+		
+		<s:Line height="100%"
+				x="0"
+				yFrom="0" yTo="10">
+			<s:stroke>
+				<s:SolidColorStroke color="0xCCCCCC"
+									weight="1"/>
+			</s:stroke>
+		</s:Line>
+
+        <s:ToggleButton id="fontWeight"
+                        label="b"
+						width="30"/>
+
+        <s:ToggleButton id="fontStyle"
+                        label="i"
+						width="30"/>
+
+        <s:ToggleButton id="textDecoration"
+                        label="u"
+						width="30"/>
+
+        <s:Line height="100%"
+                x="0"
+                yFrom="0" yTo="10">
+            <s:stroke>
+                <s:SolidColorStroke color="0x999999"
+                                    weight="1"/>
+            </s:stroke>
+        </s:Line>
+		
+		<s:Label id="textAlignLabel"
+				 text="align"
+				 styleName="toolbarLabel"/>
+
+        <s:DropDownList id="textAlign"
+                        width="75"/>
+		
+		<s:Label id="lineHeightLabel"
+				 text="line space"
+				 styleName="toolbarLabel"/>
+
+        <s:DropDownList id="lineHeight"
+                        width="55"/>
+		
+		<s:Label id="columnCountLabel"
+				 text="columns"
+				 styleName="toolbarLabel"/>
+
+        <s:DropDownList id="columnCount"
+                        width="50"/>
+
+    </s:Group>
+
+</s:Skin>

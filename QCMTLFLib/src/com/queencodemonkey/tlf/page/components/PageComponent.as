@@ -38,12 +38,8 @@ package com.queencodemonkey.tlf.page.components
     import flashx.textLayout.elements.TextFlow;
 
     import mx.core.FlexGlobals;
-
-    import mx.core.FlexGlobals;
     import mx.events.MoveEvent;
     import mx.events.ResizeEvent;
-    import mx.styles.CSSStyleDeclaration;
-
     import mx.styles.CSSStyleDeclaration;
 
     import spark.components.supportClasses.SkinnableComponent;
@@ -118,6 +114,23 @@ package com.queencodemonkey.tlf.page.components
             return containerController ? containerController.textLength : NaN;
         }
 
+        /**
+         * Whether an update to the text flow composition and display is
+         * requested when the page resizes.
+         */
+        public function get updateOnResize():Boolean
+        {
+            return _updateOnResize;
+        }
+
+        /**
+         * @private
+         */
+        public function set updateOnResize(value:Boolean):void
+        {
+            _updateOnResize = value;
+        }
+
         //------------------------------------------------------------------
         //
         //  P R O T E C T E D    P R O P E R T I E S 
@@ -128,6 +141,12 @@ package com.queencodemonkey.tlf.page.components
          * The controller that links this page to a TextFlow.
          */
         protected var containerController:ContainerController = null;
+
+        //------------------------------------------------------------------
+        //  G E T T E R / S E T T E R    P R O P E R T I E S 
+        //------------------------------------------------------------------
+
+        private var _updateOnResize:Boolean = true;
 
         //------------------------------------------------------------------
         //
@@ -156,19 +175,26 @@ package com.queencodemonkey.tlf.page.components
          */
         public function isLastPage():Boolean
         {
-            return containerController.textFlow && (containerController.absoluteStart + containerController.textLength) >= containerController.textFlow.textLength;
+            return containerController && containerController.textFlow &&
+                (containerController.absoluteStart + containerController.textLength) >= containerController.textFlow.textLength;
         }
 
         /**
          * Links the page to a text flow and sets up the page to display
          * content.
+		 * 
          * @param textFlow A TextFlow instance to connect to the page.
          */
-        public function linkToTextFlow(textFlow:TextFlow):void
+        public function linkToTextFlow(textFlow:TextFlow, compositionWidth:Number = NaN, compositionHeight:Number = NaN):void
         {
             if (!containerController || containerController.textFlow != textFlow)
             {
-                containerController = new ContainerController(container, container.width, container.height);
+                if (!isNaN(compositionWidth) && !isNaN(compositionHeight))
+                    containerController = new ContainerController(container, compositionWidth, compositionHeight);
+                else if (container.width > 0 && container.height > 0)
+                    containerController = new ContainerController(container, container.width, container.height);
+                else
+                    containerController = new ContainerController(container);
                 // Need to set verticalScrollPolicy to off so that no partial
                 // lines are laid out in a container: a page should only be
                 // assigned as many text lines as it can display.
@@ -247,8 +273,10 @@ package com.queencodemonkey.tlf.page.components
          */
         private function resetControllerDimensions():void
         {
-            containerController.setCompositionSize(container.width, container.height);
-            containerController.textFlow.flowComposer.updateAllControllers();
+            if (container.width > 0 && container.height > 0)
+                containerController.setCompositionSize(container.width, container.height);
+            if (updateOnResize)
+                containerController.textFlow.flowComposer.updateAllControllers();
         }
 
         //------------------------------------------------------------------

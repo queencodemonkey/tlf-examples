@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--============================================================================
+
+    Copyright © 2011, Huyen Tue Dao
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Huyen Tue Dao nor the names of other contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+    IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+    THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+    PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL HUYEN TUE DAO BE LIABLE FOR
+    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+    SUCH DAMAGE.
+
+=============================================================================-->
+<!--- An advanced text editor built with the Text Layout Framework. -->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               xmlns:components="com.queencodemonkey.tlf.texteditor.components.*"
+               xmlns:pagecomponents="com.queencodemonkey.tlf.page.components.*"
+               width="100%" height="100%"
+               backgroundColor="0x999999"
+			   creationComplete="creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.queencodemonkey.tlf.texteditor.Core;
+			import com.queencodemonkey.tlf.texteditor.events.EditToolbarEvent;
+			import com.queencodemonkey.tlf.texteditor.events.FormatToolbarEvent;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.edit.EditingMode;
+			import flashx.textLayout.elements.Configuration;
+			import flashx.textLayout.formats.TextAlign;
+			import flashx.textLayout.formats.TextLayoutFormat;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			
+			private var core:Core = new Core();
+
+			private function creationCompleteHandler(event:FlexEvent):void
+			{
+				var configuration:Configuration = new Configuration();
+				var initialFormat:TextLayoutFormat = new TextLayoutFormat();
+				initialFormat.paddingTop = 50;
+				initialFormat.paddingBottom = 50;
+				initialFormat.paddingLeft = 50;
+				initialFormat.paddingRight = 50;
+				initialFormat.textAlign = TextAlign.LEFT;
+				configuration.textFlowInitialFormat = initialFormat;
+				configuration.unfocusedSelectionFormat = configuration.focusedSelectionFormat;
+				configuration.inactiveSelectionFormat = configuration.focusedSelectionFormat;
+				
+				core.textFlow = TextConverter.importToFlow(textFlowData, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
+				core.editingMode = EditingMode.READ_WRITE;
+				core.pageDisplay = pageDisplay;
+				core.addCommonFormatDisplay(formatToolbar);
+			}
+
+			private function formatToolbar_applyFormatHandler(event:FormatToolbarEvent):void
+			{
+				core.applyFormat(event.property, event.value);
+			}
+
+			private function formatToolbar_resizeHandler(event:ResizeEvent):void
+			{
+				pageDisplay.setStyle("top", formatToolbar.height);
+			}
+
+
+			private function editToolbar_findHandler(event:EditToolbarEvent):void
+			{
+				core.search(event.values[0]);
+			}
+
+
+			private function editToolbar_replaceHandler(event:EditToolbarEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+
+		]]>
+	</fx:Script>
+
+    <fx:Declarations>
+		
+		<fx:XML id="textFlowData"
+				source="assets/data/goodomens.xml"/>
+		
+    </fx:Declarations>
+
+    <fx:Style source="assets/styles/styles.css"/>
+
+    <pagecomponents:PageDisplay id="pageDisplay"
+                                top="0" bottom="0" left="0" right="0"/>
+	
+	<components:FormatToolbar id="formatToolbar"
+							  horizontalCenter="0"
+							  applyFormat="formatToolbar_applyFormatHandler(event)"
+							  resize="formatToolbar_resizeHandler(event)"/>
+	
+	<components:EditToolbar id="editToolbar"
+							bottom="0" horizontalCenter="0"
+							find="editToolbar_findHandler(event)"
+							replace="editToolbar_replaceHandler(event)"/>
+
+</s:Application>

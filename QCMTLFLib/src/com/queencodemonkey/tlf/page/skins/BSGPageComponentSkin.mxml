@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<!-- Host component -->
+	<fx:Metadata>
+		/** 
+		 * @copy spark.skins.spark.ApplicationSkin#hostComponent
+		 */
+		[HostComponent("com.queencodemonkey.tlf.page.components.PageComponent")]
+	</fx:Metadata>
+	
+	<fx:Declarations>
+		
+		<s:SolidColorStroke id="borderStroke"
+							color="0x999999"
+							weight="1"/>
+		
+		<s:SolidColor id="backgroundFill"
+					  color="0xFFFFFF"/>
+		
+		<fx:Array id="backgroundFilters">
+			
+			<s:DropShadowFilter id="dropShadow"
+								blurX="10" blurY="10" alpha="0.32" distance="5" angle="45"/>
+			
+		</fx:Array>
+		
+	</fx:Declarations>
+	
+	<s:Path top="0" bottom="0" left="0" right="0"
+			data="M 0 5 L 5 0 L 80 0 L 85 5 L 85 105 L 80 110 L 5 110 L 0 105 Z"
+			stroke="{borderStroke}" fill="{backgroundFill}" filters="{backgroundFilters}"/>
+	
+	<mx:UIComponent id="container"
+					width="{width}" height="{height}"/>
+	
+</s:Skin>

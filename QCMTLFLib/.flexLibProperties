@@ -13,6 +13,13 @@
     <classEntry path="com.queencodemonkey.tlf.bookmarks.events.LineNumberColumnEvent"/>
     <classEntry path="com.queencodemonkey.tlf.bookmarks.components.BookmarkColumn"/>
     <classEntry path="com.queencodemonkey.tlf.bookmarks.components.supportClasses.Bookmark"/>
+    <classEntry path="com.queencodemonkey.tlf.page.skins.BSGPageComponentSkin"/>
+    <classEntry path="com.queencodemonkey.tlf.page.components.PageDisplay"/>
+    <classEntry path="com.queencodemonkey.tlf.page.skins.PageDisplaySkin"/>
+    <classEntry path="com.queencodemonkey.tlf.textLayout.utils.TextLayoutFormatUtil"/>
+    <classEntry path="com.queencodemonkey.tlf.page.components.IPageDisplay"/>
+    <classEntry path="com.queencodemonkey.tlf.textLayout.edit.SearchManager"/>
+    <classEntry path="com.queencodemonkey.tlf.textLayout.edit.supportClasses.SearchResult"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/******************************************************************************
 
   Copyright © 2011, Huyen Tue Dao
   All rights reserved.
@@ -26,20 +26,47 @@
   OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
   SUCH DAMAGE.
 
-*******************************************************************************/
+******************************************************************************/
 @namespace s "library://ns.adobe.com/flex/spark";
 @namespace mx "library://ns.adobe.com/flex/mx";
+@namespace components "com.queencodemonkey.tlf.page.components.*";
 
+/**********************************************************************
+  APPLICATION
+**********************************************************************/
 s|Application
 {
-	fontFamily: "Helvectica Neue, Arial, sans";
-	fontSize:14;
+	font-family: "Gill Sans, Helvetica Neue, Arial, sans";
+	font-size: 14;
 }
 
-#blankTextInput
+/**********************************************************************
+  FORMAT TOOLBAR
+**********************************************************************/
+#fontWeight
 {
-	color: #666666;
-	fontFamily: "Andale Mono, Courier New, Courier, monospace";
-	fontSize: 14;
-	text-align: left;
+	font-weight: bold;
+}
+
+#fontStyle
+{
+	font-style: italic;
+}
+
+#textDecoration
+{
+	text-decoration: underline;
+}
+
+.toolbarLabel
+{
+	font-size: 11;
+}
+
+/**********************************************************************
+  PAGE DISPLAY
+**********************************************************************/
+components|PageComponent
+{
+	skin-class: ClassReference("com.queencodemonkey.tlf.page.skins.BSGPageComponentSkin");
 }

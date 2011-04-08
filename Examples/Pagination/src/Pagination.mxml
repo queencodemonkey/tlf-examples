@@ -40,13 +40,14 @@
 
     <fx:Script>
         <![CDATA[
-            import com.queencodemonkey.tlf.page.components.PageComponent;
-
-            import flashx.textLayout.conversion.TextConverter;
-            import flashx.textLayout.edit.EditManager;
-            import flashx.textLayout.elements.TextFlow;
-            import flashx.textLayout.events.UpdateCompleteEvent;
-            import flashx.undo.UndoManager;
+			import com.queencodemonkey.tlf.page.components.PageComponent;
+			import com.queencodemonkey.tlf.page.skins.BSGPageComponentSkin;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.edit.EditManager;
+			import flashx.textLayout.elements.TextFlow;
+			import flashx.textLayout.events.UpdateCompleteEvent;
+			import flashx.undo.UndoManager;
 
             /**
              * @private
@@ -118,6 +119,7 @@
             private function createPage():PageComponent
             {
                 var newPage:PageComponent = new PageComponent();
+//				newPage.setStyle("skinClass", Class(BSGPageComponentSkin));
                 newPage.width = PAGE_WIDTH;
                 newPage.height = PAGE_HEIGHT;
                 return newPage;
@@ -178,7 +180,8 @@
                 {
                     addPageButton.enabled = true;
                     removePageButton.enabled = pageGroup.numElements > 0;
-                    textFlow.removeEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
+					if (textFlow)
+                    	textFlow.removeEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
                 }
             }
 
@@ -224,11 +227,11 @@
                 if (autoPaginateCheckBox.selected)
                 {
                     var page:PageComponent = addPage();
-                    while (!page.isLastPage())
-                    {
-                        page = addPage();
-                    }
-                    textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
+//                    while (!page.isLastPage())
+//                    {
+//                        page = addPage();
+//                    }
+//                    textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
                 }
                 else
                 {
@@ -262,7 +265,7 @@
                     removePageButton.enabled = false;
                 }
             }
-
+			
             /**
              * @private
              * If auto-paginate is on, adds pages as appropriate or removes
@@ -271,17 +274,19 @@
             private function textFlow_updateCompleteHandler(event:UpdateCompleteEvent):void
             {
                 var page:PageComponent = pageGroup.getElementAt(pageGroup.numElements - 1) as PageComponent;
-                while (!page.isLastPage() && page.textLength > 0)
+//                while (!page.isLastPage() && page.textLength > 0)
+                if (!page.isLastPage())
                 {
                     page = addPage();
                 }
                 // If a page is not the first page but has a text length of 0,
                 // then it is extraneous and should be removed for
                 // auto-pagination.
-                while (page.textLength == 0 && pageGroup.numElements > 1)
+//                while (page.textLength == 0 && pageGroup.numElements > 1)
+                if (page.textLength == 0 && pageGroup.numElements > 1)
                 {
                     removePage();
-                    page = pageGroup.getElementAt(pageGroup.numElements - 1) as PageComponent;
+//                    page = pageGroup.getElementAt(pageGroup.numElements - 1) as PageComponent;
                 }
             }
             // When importing data from XML objects, need to set this or

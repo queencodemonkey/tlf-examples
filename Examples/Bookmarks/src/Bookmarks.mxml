@@ -31,11 +31,24 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:mx="library://ns.adobe.com/flex/mx"
-               creationComplete="creationCompleteHandler(event)" xmlns:components="com.queencodemonkey.tlf.bookmarks.components.*">
+               xmlns:components="com.queencodemonkey.tlf.bookmarks.components.*"
+               xmlns:sycdct="com.queencodemonkey.tlf.sycdct.*"
+               width="1024" height="600"
+               creationComplete="creationCompleteHandler(event)">
 
     <fx:Declarations>
+
+        <s:TextFlow id="exampleTitle"
+                    color="0x000000"
+                    fontFamily="Adobe Caslon Pro, Georgia, Times New Roman, serif">
+            <s:p>
+                <s:span fontSize="36">Playing with Text Lines</s:span>
+            </s:p>
+        </s:TextFlow>
+
         <fx:XML id="textFlowData"
                 source="assets/data/how_many_angels_can_dance.xml"/>
+		
     </fx:Declarations>
 
     <fx:Script>
@@ -60,6 +73,8 @@
             import flashx.textLayout.formats.WhiteSpaceCollapse;
 
             import mx.events.FlexEvent;
+			
+			XML.ignoreWhitespace = false;
 
             //------------------------------------------------------------------
             //
@@ -113,7 +128,7 @@
                         var graphics:Graphics = highlightSprite.graphics;
                         graphics.clear();
                         graphics.beginFill(0x00FFFF, 0.1);
-                        graphics.drawRect(0, 0 - textLine.ascent + (textLine.textHeight - lineHeight) * 0.5, page.width, lineHeight);
+                        graphics.drawRect(-5, 0 - textLine.textHeight - textLine.descent, page.width, lineHeight);
                         graphics.endFill();
                     }
 
@@ -146,6 +161,11 @@
             //  EVENT  HANDLERS 
             //------------------------------------------------------------------
 
+            private function addBookmarkButton_clickHandler(event:MouseEvent):void
+            {
+                bookmarkColumn.addBookmark(highlightedLineIndex + 1, "Here's a bookmark!");
+            }
+
             private function creationCompleteHandler(event:FlexEvent):void
             {
                 configuration = new Configuration();
@@ -155,6 +175,8 @@
                 initialFormat.dominantBaseline = TextBaseline.DESCENT;
                 initialFormat.fontFamily = "Courier New";
                 initialFormat.fontSize = 14;
+                initialFormat.paddingLeft = 5;
+                initialFormat.paddingRight = 5;
                 initialFormat.whiteSpaceCollapse = WhiteSpaceCollapse.PRESERVE;
                 configuration.textFlowInitialFormat = initialFormat;
 
@@ -177,19 +199,26 @@
                 highlightSprite = new Sprite();
             }
 
+            private function removeBookmarkButton_clickHandler(event:MouseEvent):void
+            {
+                bookmarkColumn.removeBookmark(highlightedLineIndex + 1);
+            }
+
             private function textContainerManager_selectionChangeHandler(event:SelectionEvent):void
             {
                 var selectionState:SelectionState = event.selectionState;
                 var textFlow:TextFlow = selectionState.textFlow;
                 var startLineIndex:int = textFlow.flowComposer.findLineIndexAtPosition(selectionState.absoluteStart);
                 var endLineIndex:int = textFlow.flowComposer.findLineIndexAtPosition(selectionState.absoluteEnd);
-                if (startLineIndex == endLineIndex)
+                if (startLineIndex == endLineIndex && selectionState.absoluteStart == selectionState.absoluteEnd)
                 {
                     highlightLine(startLineIndex);
+                    addBookmarkButton.enabled = true;
                 }
                 else
                 {
                     unhighlightLine();
+                    addBookmarkButton.enabled = false;
                 }
             }
 
@@ -197,27 +226,82 @@
             {
                 lineNumberColumn.numLines = textContainerManager.numLines;
             }
-            XML.ignoreWhitespace = false;
         ]]>
     </fx:Script>
 
-    <s:Scroller id="scroller"
-                top="0" bottom="0" left="0" right="15">
+    <sycdct:ExampleHeader id="exampleHeader"
+                          top="10" left="20" right="20"
+                          exampleTitle="{exampleTitle}"/>
 
-        <s:Group id="scrollerGroup"
-                 top="0" bottom="0" left="0" right="0">
+    <s:Group width="100%"
+             top="80" bottom="0">
 
-            <components:LineNumberColumn id="lineNumberColumn"
-                                         width="30"
-                                         lineHeight="16.8" lineNumberSelected="lineNumberColumn_lineNumberSelected(event)"/>
+        <s:Rect width="1" height="100%"
+                left="45">
+            <s:fill>
+                <s:SolidColor color="0xCCCCCC"/>
+            </s:fill>
+        </s:Rect>
 
-            <s:SpriteVisualElement id="page"
-                                   top="0" bottom="0" left="30" right="0"/>
+        <components:BookmarkColumn id="bookmarkColumn"
+                                   width="15"
+                                   top="0" bottom="0"/>
+
+        <s:Scroller id="scroller"
+                    top="0" bottom="0" left="15" right="250">
+
+            <s:Group id="scrollerGroup"
+                     top="0" bottom="0" left="0" right="0">
+
+                <components:LineNumberColumn id="lineNumberColumn"
+                                             width="30"
+                                             lineHeight="16.8" lineNumberSelected="lineNumberColumn_lineNumberSelected(event)"/>
+
+                <s:SpriteVisualElement id="page"
+                                       top="0" bottom="0" left="30" right="0"/>
+
+            </s:Group>
+
+        </s:Scroller>
+
+        <s:Group id="bookmarkControls"
+                 width="250" height="100%"
+                 top="0" bottom="0" right="0">
+
+            <s:Rect id="bookmarkControlsBackground"
+                    width="100%" height="100%">
+                <s:fill>
+                    <s:SolidColor color="0xCCCCCC"/>
+                </s:fill>
+            </s:Rect>
+
+            <s:Button id="addBookmarkButton"
+                      width="125"
+                      top="50" horizontalCenter="0"
+                      label="Add Bookmark"
+                      click="addBookmarkButton_clickHandler(event)"/>
+
+            <s:Button id="removeBookmarkButton"
+                      width="125"
+                      top="100" horizontalCenter="0"
+                      label="Remove Bookmark"
+                      click="removeBookmarkButton_clickHandler(event)"/>
+
+            <s:Rect width="1" height="100%"
+                    left="0">
+                <s:fill>
+                    <s:SolidColor color="0x999999"/>
+                </s:fill>
+            </s:Rect>
 
         </s:Group>
 
-    </s:Scroller>
+        <s:Rect width="100%" height="1">
+            <s:fill>
+                <s:SolidColor color="0x999999"/>
+            </s:fill>
+        </s:Rect>
 
-
+    </s:Group>
 
 </s:Application>
