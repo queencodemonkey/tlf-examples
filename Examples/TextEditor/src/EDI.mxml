@@ -34,90 +34,103 @@
                xmlns:mx="library://ns.adobe.com/flex/mx"
                xmlns:components="com.queencodemonkey.tlf.texteditor.components.*"
                xmlns:pagecomponents="com.queencodemonkey.tlf.page.components.*"
+               xmlns:search="com.queencodemonkey.tlf.texteditor.components.search.*"
                width="100%" height="100%"
                backgroundColor="0x999999"
-			   creationComplete="creationCompleteHandler(event)">
-	<fx:Script>
-		<![CDATA[
-			import com.queencodemonkey.tlf.texteditor.Core;
-			import com.queencodemonkey.tlf.texteditor.events.EditToolbarEvent;
-			import com.queencodemonkey.tlf.texteditor.events.FormatToolbarEvent;
-			
-			import flashx.textLayout.conversion.TextConverter;
-			import flashx.textLayout.edit.EditingMode;
-			import flashx.textLayout.elements.Configuration;
-			import flashx.textLayout.formats.TextAlign;
-			import flashx.textLayout.formats.TextLayoutFormat;
-			
-			import mx.events.FlexEvent;
-			import mx.events.ResizeEvent;
-			
-			private var core:Core = new Core();
+               creationComplete="creationCompleteHandler(event)">
+    <fx:Script>
+        <![CDATA[
+            import com.queencodemonkey.tlf.texteditor.Core;
+            import com.queencodemonkey.tlf.texteditor.events.EditToolbarEvent;
+            import com.queencodemonkey.tlf.texteditor.events.FormatToolbarEvent;
+            
+            import flashx.textLayout.conversion.TextConverter;
+            import flashx.textLayout.edit.EditingMode;
+            import flashx.textLayout.elements.Configuration;
+            import flashx.textLayout.formats.TextAlign;
+            import flashx.textLayout.formats.TextLayoutFormat;
+            
+            import mx.events.FlexEvent;
+            import mx.events.ResizeEvent;
 
-			private function creationCompleteHandler(event:FlexEvent):void
-			{
-				var configuration:Configuration = new Configuration();
-				var initialFormat:TextLayoutFormat = new TextLayoutFormat();
-				initialFormat.paddingTop = 50;
-				initialFormat.paddingBottom = 50;
-				initialFormat.paddingLeft = 50;
-				initialFormat.paddingRight = 50;
-				initialFormat.textAlign = TextAlign.LEFT;
-				configuration.textFlowInitialFormat = initialFormat;
-				configuration.unfocusedSelectionFormat = configuration.focusedSelectionFormat;
-				configuration.inactiveSelectionFormat = configuration.focusedSelectionFormat;
-				
-				core.textFlow = TextConverter.importToFlow(textFlowData, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
-				core.editingMode = EditingMode.READ_WRITE;
-				core.pageDisplay = pageDisplay;
-				core.addCommonFormatDisplay(formatToolbar);
-			}
+            //------------------------------------------------------------------
+            //
+            //  P R I V A T E    P R O P E R T I E S 
+            //
+            //------------------------------------------------------------------
 
-			private function formatToolbar_applyFormatHandler(event:FormatToolbarEvent):void
-			{
-				core.applyFormat(event.property, event.value);
-			}
+            private var core:Core = new Core();
 
-			private function formatToolbar_resizeHandler(event:ResizeEvent):void
-			{
-				pageDisplay.setStyle("top", formatToolbar.height);
-			}
+            //------------------------------------------------------------------
+            //  EVENT  HANDLERS 
+            //------------------------------------------------------------------
 
+            private function creationCompleteHandler(event:FlexEvent):void
+            {
+                var configuration:Configuration = new Configuration();
+                var initialFormat:TextLayoutFormat = new TextLayoutFormat();
+                initialFormat.paddingTop = 50;
+                initialFormat.paddingBottom = 50;
+                initialFormat.paddingLeft = 50;
+                initialFormat.paddingRight = 50;
+                initialFormat.textAlign = TextAlign.LEFT;
+                configuration.textFlowInitialFormat = initialFormat;
+                configuration.unfocusedSelectionFormat = configuration.focusedSelectionFormat;
+                configuration.inactiveSelectionFormat = configuration.focusedSelectionFormat;
 
-			private function editToolbar_findHandler(event:EditToolbarEvent):void
-			{
-				core.search(event.values[0]);
-			}
+                core.textFlow = TextConverter.importToFlow(textFlowData, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
+                core.editingMode = EditingMode.READ_WRITE;
+                core.pageDisplay = pageDisplay;
+                core.addCommonFormatDisplay(formatToolbar);
+            }
 
+            private function editToolbar_findHandler(event:EditToolbarEvent):void
+            {
+                core.search(event.values[0]);
+                searchResultsDisplay.data = core.getSearchResultsDisplayData();
+                searchResultsDisplay.visible = true;
+            }
 
-			private function editToolbar_replaceHandler(event:EditToolbarEvent):void
-			{
-				// TODO Auto-generated method stub
-			}
+            private function editToolbar_replaceHandler(event:EditToolbarEvent):void
+            {
+                core.replace(event.values[0], event.values[1]);
+            }
 
-		]]>
-	</fx:Script>
+            private function formatToolbar_applyFormatHandler(event:FormatToolbarEvent):void
+            {
+                core.applyFormat(event.property, event.value);
+            }
+
+            private function formatToolbar_resizeHandler(event:ResizeEvent):void
+            {
+                pageDisplay.setStyle("top", formatToolbar.height);
+            }
+        ]]>
+    </fx:Script>
 
     <fx:Declarations>
-		
-		<fx:XML id="textFlowData"
-				source="assets/data/goodomens.xml"/>
-		
+
+        <fx:XML id="textFlowData"
+                source="assets/data/goodomens.xml"/>
+
     </fx:Declarations>
 
     <fx:Style source="assets/styles/styles.css"/>
 
     <pagecomponents:PageDisplay id="pageDisplay"
                                 top="0" bottom="0" left="0" right="0"/>
-	
-	<components:FormatToolbar id="formatToolbar"
-							  horizontalCenter="0"
-							  applyFormat="formatToolbar_applyFormatHandler(event)"
-							  resize="formatToolbar_resizeHandler(event)"/>
-	
-	<components:EditToolbar id="editToolbar"
-							bottom="0" horizontalCenter="0"
-							find="editToolbar_findHandler(event)"
-							replace="editToolbar_replaceHandler(event)"/>
+
+    <components:FormatToolbar id="formatToolbar"
+                              horizontalCenter="0"
+                              resize="formatToolbar_resizeHandler(event)"
+                              applyFormat="formatToolbar_applyFormatHandler(event)"/>
+
+    <components:EditToolbar id="editToolbar"
+                            bottom="0" horizontalCenter="0"
+                            find="editToolbar_findHandler(event)" replace="editToolbar_replaceHandler(event)"/>
+
+    <search:SearchResultsDisplay id="searchResultsDisplay"
+                                 top="100" right="60"
+                                 visible="false"/>
 
 </s:Application>

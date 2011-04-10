@@ -19,7 +19,8 @@
     <classEntry path="com.queencodemonkey.tlf.textLayout.utils.TextLayoutFormatUtil"/>
     <classEntry path="com.queencodemonkey.tlf.page.components.IPageDisplay"/>
     <classEntry path="com.queencodemonkey.tlf.textLayout.edit.SearchManager"/>
-    <classEntry path="com.queencodemonkey.tlf.textLayout.edit.supportClasses.SearchResult"/>
+    <classEntry path="com.queencodemonkey.tlf.textLayout.supportClasses.SearchResult"/>
+    <classEntry path="com.queencodemonkey.tlf.textLayout.operations.ReplaceSearchResultOperation"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

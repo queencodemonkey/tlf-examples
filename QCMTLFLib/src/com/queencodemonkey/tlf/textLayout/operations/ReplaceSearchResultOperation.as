@@ -1,0 +1,122 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright © 2011, Huyen Tue Dao 
+//  All rights reserved. 
+// 
+//  Redistribution and use in source and binary forms, with or without 
+//  modification, are permitted provided that the following conditions are met: 
+//      * Redistributions of source code must retain the above copyright 
+//        notice, this list of conditions and the following disclaimer. 
+//      * Redistributions in binary form must reproduce the above copyright 
+//        notice, this list of conditions and the following disclaimer in the 
+//        documentation and/or other materials provided with the distribution. 
+//      * Neither the name of Huyen Tue Dao nor the names of other contributors 
+//        may be used to endorse or promote products derived from this software 
+//        without specific prior written permission. 
+// 
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+//  IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+//  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL HUYEN TUE DAO BE LIABLE FOR 
+//  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+//  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+//  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+//  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+//  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
+//  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
+//  SUCH DAMAGE. 
+//
+////////////////////////////////////////////////////////////////////////////////
+package com.queencodemonkey.tlf.textLayout.operations
+{
+    import com.queencodemonkey.tlf.textLayout.supportClasses.SearchResult;
+    
+    import flashx.textLayout.edit.SelectionState;
+    import flashx.textLayout.operations.FlowTextOperation;
+    import flashx.textLayout.operations.InsertTextOperation;
+
+    public class ReplaceSearchResultOperation extends FlowTextOperation
+    {
+
+        //------------------------------------------------------------------
+        //
+        //   P U B L I C    P R O P E R T I E S 
+        //
+        //------------------------------------------------------------------
+
+        public var replaceString:String;
+
+        public var searchResult:SearchResult;
+
+        //------------------------------------------------------------------
+        //
+        //  P R I V A T E    P R O P E R T I E S 
+        //
+        //------------------------------------------------------------------
+
+        private var oldAbsoluteEnd:int;
+
+        private var oldAbsoluteStart:int;
+
+        private var oldText:String;
+		
+		private var insertTextOp:InsertTextOperation;
+
+        //------------------------------------------------------------------
+        //
+        //  P U B L I C    M E T H O D S 
+        //
+        //------------------------------------------------------------------
+
+		/**
+		 * Constructor.
+		 *  
+		 * @param operationState Describes the range of text to be replaced.
+		 * @param searchResult Object describing the start and end position of
+		 * the search result text to be replaced.
+		 * @param replaceString Text with which to replace the search result.
+		 * 
+		 */		
+        public function ReplaceSearchResultOperation(operationState:SelectionState, searchResult:SearchResult, replaceString:String)
+        {
+            super(operationState);
+			this.searchResult = searchResult;
+			this.replaceString = replaceString;
+        }
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function doOperation():Boolean
+		{
+			oldAbsoluteStart = searchResult.absoluteStart;
+			oldAbsoluteEnd = searchResult.absoluteEnd;
+			oldText = textFlow.getText(searchResult.absoluteStart, searchResult.absoluteEnd);
+			
+			insertTextOp = new InsertTextOperation(new SelectionState(textFlow, oldAbsoluteStart, oldAbsoluteEnd), replaceString);
+			insertTextOp.doOperation();
+			
+			searchResult.absoluteEnd = oldAbsoluteStart + replaceString.length - 1;
+			
+		    return true;
+		}
+		
+//		/**
+//		 * @inheritDoc
+//		 */
+//		override public function redo():SelectionState
+//		{
+//		    return originalSelectionState;
+//		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function undo():SelectionState
+		{
+			searchResult.absoluteEnd = oldAbsoluteEnd;
+			insertTextOp.undo();
+		    return originalSelectionState;
+		}
+    }
+}

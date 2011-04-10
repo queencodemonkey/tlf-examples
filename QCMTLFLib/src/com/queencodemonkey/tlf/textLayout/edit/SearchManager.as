@@ -29,17 +29,25 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.queencodemonkey.tlf.textLayout.edit
 {
-    import com.queencodemonkey.tlf.textLayout.edit.supportClasses.SearchResult;
-    
+    import com.queencodemonkey.tlf.textLayout.operations.ReplaceSearchResultOperation;
+    import com.queencodemonkey.tlf.textLayout.supportClasses.SearchResult;
+
     import flash.display.Graphics;
     import flash.display.Sprite;
     import flash.geom.Rectangle;
     import flash.text.engine.TextLine;
     import flash.utils.Dictionary;
-    
+
     import flashx.textLayout.compose.IFlowComposer;
     import flashx.textLayout.compose.TextFlowLine;
+    import flashx.textLayout.edit.EditManager;
+    import flashx.textLayout.edit.IEditManager;
+    import flashx.textLayout.edit.SelectionState;
     import flashx.textLayout.elements.TextFlow;
+    import flashx.textLayout.operations.InsertTextOperation;
+    import flashx.textLayout.tlf_internal;
+
+    use namespace tlf_internal;
 
     public class SearchManager
     {
@@ -74,9 +82,19 @@ package com.queencodemonkey.tlf.textLayout.edit
             _highlightColor = value;
         }
 
+        public function get lastSearch():String
+        {
+            return searchHistory[searchHistory.length - 1];
+        }
+
         public function get numResults():int
         {
             return searchResults.length;
+        }
+
+        public function get showingHighlights():Boolean
+        {
+            return _showingHighlights;
         }
 
         public function get textFlow():TextFlow
@@ -109,8 +127,6 @@ package com.queencodemonkey.tlf.textLayout.edit
         //
         //------------------------------------------------------------------
 
-        private var searchResultTextFlowLinesMap:Dictionary;
-
         private var spritePool:Vector.<Sprite>;
 
         private var textFlowLineSpriteMap:Dictionary;
@@ -122,6 +138,8 @@ package com.queencodemonkey.tlf.textLayout.edit
         private var _highlightAlpha:Number;
 
         private var _highlightColor:uint;
+
+        private var _showingHighlights:Boolean = false;
 
         private var _textFlow:TextFlow;
 
@@ -136,13 +154,37 @@ package com.queencodemonkey.tlf.textLayout.edit
             construct();
         }
 
+        public function clearHighlights():void
+        {
+            for each (var sprite:Sprite in textFlowLineSpriteMap)
+            {
+                sprite.graphics.clear();
+                spritePool[spritePool.length] = sprite.parent.removeChild(sprite) as Sprite;
+            }
+			textFlowLineSpriteMap = new Dictionary(true);
+            _showingHighlights = false;
+        }
+
         public function clearSearchResults():void
         {
             if (searchResults.length > 0)
                 searchResults.splice(0, searchResults.length);
         }
 
-        public function search(searchString:String, caseInsensitive:Boolean = false, useRegularExpressions:Boolean = false):void
+        public function highlightResults():void
+        {
+            var numResults:int = searchResults.length;
+            if (numResults > 0)
+            {
+                for (var i:int = 0; i < numResults; i++)
+                {
+                    addResultHighlight(searchResults[i]);
+                }
+                _showingHighlights = true;
+            }
+        }
+
+        public function search(searchString:String, replaceString:String = null, caseInsensitive:Boolean = false, useRegularExpressions:Boolean = false):void
         {
             clearHighlights();
             if (textFlow)
@@ -152,6 +194,7 @@ package com.queencodemonkey.tlf.textLayout.edit
                 clearSearchResults();
 
                 var plainText:String = textFlow.getText();
+                var result:Object = null;
                 if (useRegularExpressions)
                 {
                     var options:String = caseInsensitive ? "gi" : "g";
@@ -161,13 +204,13 @@ package com.queencodemonkey.tlf.textLayout.edit
                     var absoluteStart:int = -1;
                     var absoluteEnd:int = -1;
 
-                    var result:Object = regex.exec(plainText);
+                    result = regex.exec(plainText);
                     while (result)
                     {
                         match = result[0];
                         absoluteStart = result.index;
                         absoluteEnd = absoluteStart + match.length - 1;
-                        searchResults[searchResults.length] = new SearchResult(absoluteStart, absoluteEnd);
+                        searchResults[searchResults.length] = new SearchResult(searchString, absoluteStart, absoluteEnd);
                         result = regex.exec(plainText);
                     }
                 }
@@ -182,11 +225,35 @@ package com.queencodemonkey.tlf.textLayout.edit
                     var index:int = plainText.indexOf(searchString);
                     while (index != -1)
                     {
-                        searchResults[searchResults.length] = new SearchResult(index, index + length - 1);
+                        searchResults[searchResults.length] = new SearchResult(searchString, index, index + length - 1);
                         index = plainText.indexOf(searchString, index + length);
                     }
                 }
-                highlightResults();
+                if (replaceString && textFlow.interactionManager is IEditManager)
+                {
+                    var editManager:IEditManager = textFlow.interactionManager as IEditManager;
+
+                    editManager.beginCompositeOperation();
+                    // Currently, specifying a replace string will just replace
+                    // all of the instances of search string immediately.
+                    var numResults:int = searchResults.length;
+                    var searchResult:SearchResult = null;
+                    var lengthDiff:int = 0;
+                    var replaceStringLength:int = replaceString.length;
+                    var oldStringLength:int = -1;
+                    for (var i:int = 0; i < numResults; i++)
+                    {
+                        searchResult = searchResults[i];
+                        oldStringLength = searchResult.absoluteEnd - searchResult.absoluteStart + 1;
+                        searchResult.absoluteStart += lengthDiff;
+                        searchResult.absoluteEnd += lengthDiff;
+                        editManager.insertText(replaceString, new SelectionState(textFlow, searchResult.absoluteStart, searchResult.absoluteEnd + 1));
+                        searchResult.absoluteEnd = searchResult.absoluteStart + replaceStringLength - 1;
+                        lengthDiff += replaceStringLength - oldStringLength;
+                    }
+                    editManager.endCompositeOperation();
+                }
+
             }
         }
 
@@ -219,11 +286,9 @@ package com.queencodemonkey.tlf.textLayout.edit
                 textFlowLineIndex++;
                 textFlowLine = flowComposer.getLineAt(textFlowLineIndex);
             }
-			
-			if (resultAbsoluteEnd > textFlowLine.absoluteStart)
-                containingTextFlowLines[containingTextFlowLines.length] = textFlowLine;
 
-            searchResultTextFlowLinesMap[result] = containingTextFlowLines;
+            if (resultAbsoluteEnd > textFlowLine.absoluteStart)
+                containingTextFlowLines[containingTextFlowLines.length] = textFlowLine;
 
             var numTextFlowLines:int = containingTextFlowLines.length;
             var textLine:TextLine = null;
@@ -259,39 +324,19 @@ package com.queencodemonkey.tlf.textLayout.edit
 
         }
 
-        private function clearHighlights():void
-        {
-            for each (var sprite:Sprite in textFlowLineSpriteMap)
-            {
-                sprite.graphics.clear();
-                spritePool[spritePool.length] = sprite.parent.removeChild(sprite) as Sprite;
-            }
-			textFlowLineSpriteMap = new Dictionary(true);
-        }
-
         private function construct():void
         {
-			highlightColor = DEFAULT_HIGHLIGHT_COLOR;
-			
-			highlightAlpha = DEFAULT_HIGHLIGHT_ALPHA;
-			
+            highlightColor = DEFAULT_HIGHLIGHT_COLOR;
+
+            highlightAlpha = DEFAULT_HIGHLIGHT_ALPHA;
+
             searchHistory = new Vector.<String>();
             replaceHistory = new Vector.<String>();
             searchResults = new Vector.<SearchResult>();
 
-            searchResultTextFlowLinesMap = new Dictionary(true);
             textFlowLineSpriteMap = new Dictionary(true);
 
             spritePool = new Vector.<Sprite>();
-        }
-
-        private function highlightResults():void
-        {
-            var numResults:int = searchResults.length;
-            for (var i:int = 0; i < numResults; i++)
-            {
-                addResultHighlight(searchResults[i]);
-            }
         }
     }
 }

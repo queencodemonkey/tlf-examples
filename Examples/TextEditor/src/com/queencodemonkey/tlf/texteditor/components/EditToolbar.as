@@ -197,7 +197,7 @@ package com.queencodemonkey.tlf.texteditor.components
 
         private function replaceButton_clickHandler(event:MouseEvent):void
         {
-            dispatchEvent(new EditToolbarEvent(EditToolbarEvent.FIND, false, false, findTextInput.text, replaceTextInput.text));
+            dispatchEvent(new EditToolbarEvent(EditToolbarEvent.REPLACE, false, false, findTextInput.text, replaceTextInput.text));
         }
     }
 }

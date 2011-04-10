@@ -54,12 +54,12 @@
     <fx:Script>
         <![CDATA[
             import com.queencodemonkey.tlf.bookmarks.events.LineNumberColumnEvent;
-
+            
             import flash.text.engine.ElementFormat;
             import flash.text.engine.FontDescription;
             import flash.text.engine.TextBaseline;
             import flash.text.engine.TextLine;
-
+            
             import flashx.textLayout.compose.TextFlowLine;
             import flashx.textLayout.container.TextContainerManager;
             import flashx.textLayout.conversion.TextConverter;
@@ -71,7 +71,7 @@
             import flashx.textLayout.events.UpdateCompleteEvent;
             import flashx.textLayout.formats.TextLayoutFormat;
             import flashx.textLayout.formats.WhiteSpaceCollapse;
-
+            
             import mx.events.FlexEvent;
 			
 			XML.ignoreWhitespace = false;

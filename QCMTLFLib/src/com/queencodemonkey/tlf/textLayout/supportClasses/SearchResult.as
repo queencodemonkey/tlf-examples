@@ -27,11 +27,13 @@
 //  SUCH DAMAGE. 
 //
 ////////////////////////////////////////////////////////////////////////////////
-package com.queencodemonkey.tlf.textLayout.edit.supportClasses
+package com.queencodemonkey.tlf.textLayout.supportClasses
 {
 
     public class SearchResult
     {
+		public var searchString:String;
+		
         public var absoluteStart:int;
 
         public var absoluteEnd:int;
@@ -42,8 +44,9 @@ package com.queencodemonkey.tlf.textLayout.edit.supportClasses
         //
         //------------------------------------------------------------------
 
-        public function SearchResult(absoluteStart:int = -1, absoluteEnd:int = -1)
+        public function SearchResult(searchString:String = null, absoluteStart:int = -1, absoluteEnd:int = -1)
         {
+			this.searchString = searchString;
             this.absoluteStart = absoluteStart;
             this.absoluteEnd = absoluteEnd;
         }

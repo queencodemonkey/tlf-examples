@@ -33,7 +33,8 @@ package com.queencodemonkey.tlf.texteditor
     import com.queencodemonkey.tlf.textLayout.edit.SearchManager;
     import com.queencodemonkey.tlf.textLayout.utils.TextLayoutFormatUtil;
     import com.queencodemonkey.tlf.texteditor.components.ICommonFormatDisplay;
-
+    import com.queencodemonkey.tlf.texteditor.components.search.supportClasses.SearchResultsDisplayData;
+    
     import flashx.textLayout.edit.EditManager;
     import flashx.textLayout.edit.EditingMode;
     import flashx.textLayout.edit.IEditManager;
@@ -152,6 +153,7 @@ package com.queencodemonkey.tlf.texteditor
         public function addCommonFormatDisplay(display:ICommonFormatDisplay):void
         {
             commonFormatDisplays[commonFormatDisplays.length] = display;
+			display.commonFormat = TextLayoutFormatUtil.getSelectionCommonFormat(textFlow);
         }
 
         public function applyFormat(property:String, value:*):void
@@ -189,9 +191,31 @@ package com.queencodemonkey.tlf.texteditor
         public function search(searchString:String, caseInsensitive:Boolean = false, useRegularExpressions:Boolean = false):void
         {
 			if (!textFlow.flowComposer.composing)
-            	searchManager.search(searchString, caseInsensitive, useRegularExpressions);
+			{
+            	searchManager.search(searchString, null, caseInsensitive, useRegularExpressions);
+				searchManager.highlightResults();
+			}
         }
-
+		
+		public function replace(searchString:String, replaceString:String = null, caseInsensitive:Boolean = false, useRegularExpressions:Boolean = false):void
+		{
+			if (!textFlow.flowComposer.composing)
+			{
+				searchManager.search(searchString, replaceString, caseInsensitive, useRegularExpressions);
+				searchManager.highlightResults();
+			}
+		}
+		
+		public function getSearchResultsDisplayData():SearchResultsDisplayData
+		{
+			if (searchManager.searchResults.length > 0)
+				return new SearchResultsDisplayData(textFlow, 
+					searchManager.lastSearch, 
+					searchManager.searchResults);
+			else
+				return null;
+		}
+		
         //------------------------------------------------------------------
         //
         //   P R O T E C T E D    M E T H O D S 
@@ -268,28 +292,15 @@ package com.queencodemonkey.tlf.texteditor
 
         private function textFlow_selectionChangeHandler(event:SelectionEvent):void
         {
-            var interactionManager:ISelectionManager = textFlow.interactionManager;
-
-            var commonFormat:TextLayoutFormat = new TextLayoutFormat();
-            var commonFormatComponent:ITextLayoutFormat = interactionManager.getCommonCharacterFormat();
-            if (commonFormatComponent)
-                commonFormat.concat(commonFormatComponent);
-
-            commonFormatComponent = interactionManager.getCommonParagraphFormat();
-            if (commonFormatComponent)
-                commonFormat.concat(commonFormatComponent);
-
-            commonFormatComponent = interactionManager.getCommonContainerFormat();
-            if (commonFormatComponent)
-                commonFormat.concat(commonFormatComponent);
-
-            for each (var commonFormatDisplay:ICommonFormatDisplay in commonFormatDisplays)
-            {
-                commonFormatDisplay.commonFormat = commonFormat;
-            }
+			var commonFormat:TextLayoutFormat = TextLayoutFormatUtil.getSelectionCommonFormat(textFlow);
+			
+			for each (var commonFormatDisplay:ICommonFormatDisplay in commonFormatDisplays)
+			{
+				commonFormatDisplay.commonFormat = commonFormat;
+			}
 			
 			if (searchManager.numResults > 0)
-				searchManager.clearSearchResults();
+				searchManager.clearHighlights();
         }
     }
 }

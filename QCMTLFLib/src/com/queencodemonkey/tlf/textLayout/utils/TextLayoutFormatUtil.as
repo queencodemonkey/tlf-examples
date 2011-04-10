@@ -29,9 +29,33 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.queencodemonkey.tlf.textLayout.utils
 {
+	import flashx.textLayout.edit.ISelectionManager;
+	import flashx.textLayout.elements.TextFlow;
+	import flashx.textLayout.formats.ITextLayoutFormat;
+	import flashx.textLayout.formats.TextLayoutFormat;
 
     public class TextLayoutFormatUtil
     {
+		public static function getSelectionCommonFormat(textFlow:TextFlow):TextLayoutFormat
+		{
+			var interactionManager:ISelectionManager = textFlow.interactionManager;
+			
+			var commonFormat:TextLayoutFormat = new TextLayoutFormat();
+			var commonFormatComponent:ITextLayoutFormat = interactionManager.getCommonCharacterFormat();
+			if (commonFormatComponent)
+				commonFormat.concat(commonFormatComponent);
+			
+			commonFormatComponent = interactionManager.getCommonParagraphFormat();
+			if (commonFormatComponent)
+				commonFormat.concat(commonFormatComponent);
+			
+			commonFormatComponent = interactionManager.getCommonContainerFormat();
+			
+			if (commonFormatComponent)
+				commonFormat.concat(commonFormatComponent);
+			
+			return commonFormat;
+		}
 
 		public static function isLeafFormat(property:String):Boolean
 		{

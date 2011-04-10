@@ -30,6 +30,7 @@
 @namespace s "library://ns.adobe.com/flex/spark";
 @namespace mx "library://ns.adobe.com/flex/mx";
 @namespace components "com.queencodemonkey.tlf.page.components.*";
+@namespace search "com.queencodemonkey.tlf.texteditor.components.search.*";
 
 /**********************************************************************
   APPLICATION
@@ -69,4 +70,26 @@ s|Application
 components|PageComponent
 {
 	skin-class: ClassReference("com.queencodemonkey.tlf.page.skins.BSGPageComponentSkin");
+}
+
+/**********************************************************************
+  SEARCH RESULTS
+**********************************************************************/
+#searchStringLabel
+{
+	font-size: 16;
+	text-align: center;
+	vertical-align: middle;
+}
+
+search|SearchResultRenderer #contextLabel, 
+{
+	color: #333333;
+	font-size: 14;
+}
+
+search|SearchResultRenderer #contextLabel, 
+{
+	color: #333333;
+	font-size: 12;
 }
