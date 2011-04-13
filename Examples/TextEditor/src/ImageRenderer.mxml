@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			private var dataDirty:Boolean = false;
+
+			override public function set data(value:Object):void
+			{
+				if (value != super.data)
+				{
+					super.data = value;
+					dataDirty = true;
+					invalidateProperties();
+				}
+			}
+			
+			/**
+			 * @inheritDoc
+			 */
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if (dataDirty)
+				{
+					image.source = data as String;
+					dataDirty = false;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<mx:Image id="image"
+			  top="10" bottom="10" left="10" right="10"/>
+	
+</s:ItemRenderer>

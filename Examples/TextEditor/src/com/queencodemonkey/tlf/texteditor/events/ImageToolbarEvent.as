@@ -31,28 +31,28 @@ package com.queencodemonkey.tlf.texteditor.events
 {
     import flash.events.Event;
 
-    public class FormatToolbarEvent extends Event
+    public class ImageToolbarEvent extends Event
     {
+        public static const INSERT_IMAGE:String = "insertImage";
 
-		public static const APPLY:String = "applyFormat";
-		
-		public static const BLOCK_QUOTE:String = "blockQuote";
-		
-		public var property:String = null;
-		
-		public var value:* = null;
-		
+        //------------------------------------------------------------------
+        //
+        //   P U B L I C    P R O P E R T I E S 
+        //
+        //------------------------------------------------------------------
+
+        public var value:*;
+
         //------------------------------------------------------------------
         //
         //  P U B L I C    M E T H O D S 
         //
         //------------------------------------------------------------------
 
-        public function FormatToolbarEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, property:String = null, value:* = null)
+        public function ImageToolbarEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, value:* = null)
         {
             super(type, bubbles, cancelable);
-			this.property = property;
-			this.value = value;
+            this.value = value;
         }
     }
 }

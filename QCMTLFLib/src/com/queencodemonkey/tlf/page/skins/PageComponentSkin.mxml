@@ -65,6 +65,6 @@
 
     <mx:UIComponent id="container"
                     width="{width}" height="{height}"
-                    top="50" left="50"/>
+                    top="0" left="0"/>
 
 </s:Skin>

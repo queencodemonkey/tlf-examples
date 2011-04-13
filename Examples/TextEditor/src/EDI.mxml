@@ -40,18 +40,25 @@
                creationComplete="creationCompleteHandler(event)">
     <fx:Script>
         <![CDATA[
-            import com.queencodemonkey.tlf.texteditor.Core;
-            import com.queencodemonkey.tlf.texteditor.events.EditToolbarEvent;
-            import com.queencodemonkey.tlf.texteditor.events.FormatToolbarEvent;
-            
-            import flashx.textLayout.conversion.TextConverter;
-            import flashx.textLayout.edit.EditingMode;
-            import flashx.textLayout.elements.Configuration;
-            import flashx.textLayout.formats.TextAlign;
-            import flashx.textLayout.formats.TextLayoutFormat;
-            
-            import mx.events.FlexEvent;
-            import mx.events.ResizeEvent;
+			import com.queencodemonkey.tlf.texteditor.Core;
+			import com.queencodemonkey.tlf.texteditor.components.search.SearchResultRenderer;
+			import com.queencodemonkey.tlf.texteditor.events.EditToolbarEvent;
+			import com.queencodemonkey.tlf.texteditor.events.FormatToolbarEvent;
+			
+			import flash.text.engine.TextLine;
+			
+			import flashx.textLayout.compose.TextFlowLine;
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.edit.EditingMode;
+			import flashx.textLayout.elements.Configuration;
+			import flashx.textLayout.formats.TextAlign;
+			import flashx.textLayout.formats.TextLayoutFormat;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			
+			import spark.components.List;
+			import spark.events.IndexChangeEvent;
 
             //------------------------------------------------------------------
             //
@@ -82,7 +89,22 @@
                 core.editingMode = EditingMode.READ_WRITE;
                 core.pageDisplay = pageDisplay;
                 core.addCommonFormatDisplay(formatToolbar);
+				
+				searchResultsDisplay.resultList.addEventListener(IndexChangeEvent.CHANGE, resultList_changeHandler);
             }
+
+			private function resultList_changeHandler(event:IndexChangeEvent):void
+			{
+				var resultList:List = event.currentTarget as List;
+				var resultPosition:Point = null;
+				var rendererPosition:Point = null;
+				
+				var renderer:SearchResultRenderer = resultList.dataGroup.getElementAt(resultList.selectedIndex) as SearchResultRenderer;
+				var firstTextFlowLine:TextFlowLine = core.textFlow.flowComposer.getLineAt(renderer.data.startLineNumber);
+				var firstTextLine:TextLine = firstTextFlowLine.getTextLine();
+				rendererPosition = renderer.parent.localToGlobal(new Point(renderer.x, renderer.y));
+				
+			}
 
             private function editToolbar_findHandler(event:EditToolbarEvent):void
             {
@@ -105,6 +127,12 @@
             {
                 pageDisplay.setStyle("top", formatToolbar.height);
             }
+
+			private function formatToolbar_blockQuoteHandler(event:FormatToolbarEvent):void
+			{
+				core.createBlockQuote();
+			}
+
         ]]>
     </fx:Script>
 
@@ -119,11 +147,12 @@
 
     <pagecomponents:PageDisplay id="pageDisplay"
                                 top="0" bottom="0" left="0" right="0"/>
-
+	
     <components:FormatToolbar id="formatToolbar"
                               horizontalCenter="0"
                               resize="formatToolbar_resizeHandler(event)"
-                              applyFormat="formatToolbar_applyFormatHandler(event)"/>
+                              applyFormat="formatToolbar_applyFormatHandler(event)"
+							  blockQuote="formatToolbar_blockQuoteHandler(event)"/>
 
     <components:EditToolbar id="editToolbar"
                             bottom="0" horizontalCenter="0"
@@ -132,5 +161,8 @@
     <search:SearchResultsDisplay id="searchResultsDisplay"
                                  top="100" right="60"
                                  visible="false"/>
+	
+	<mx:Canvas id="searchConnectorOverlay"
+			   width="100%" height="100"/>
 
 </s:Application>

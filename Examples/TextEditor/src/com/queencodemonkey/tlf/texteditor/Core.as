@@ -31,6 +31,7 @@ package com.queencodemonkey.tlf.texteditor
 {
     import com.queencodemonkey.tlf.page.components.IPageDisplay;
     import com.queencodemonkey.tlf.textLayout.edit.SearchManager;
+    import com.queencodemonkey.tlf.textLayout.operations.BlockQuoteOperation;
     import com.queencodemonkey.tlf.textLayout.utils.TextLayoutFormatUtil;
     import com.queencodemonkey.tlf.texteditor.components.ICommonFormatDisplay;
     import com.queencodemonkey.tlf.texteditor.components.search.supportClasses.SearchResultsDisplayData;
@@ -38,14 +39,17 @@ package com.queencodemonkey.tlf.texteditor
     import flashx.textLayout.edit.EditManager;
     import flashx.textLayout.edit.EditingMode;
     import flashx.textLayout.edit.IEditManager;
-    import flashx.textLayout.edit.ISelectionManager;
     import flashx.textLayout.edit.SelectionManager;
     import flashx.textLayout.edit.SelectionState;
+    import flashx.textLayout.elements.InlineGraphicElementStatus;
     import flashx.textLayout.elements.TextFlow;
     import flashx.textLayout.events.SelectionEvent;
-    import flashx.textLayout.formats.ITextLayoutFormat;
+    import flashx.textLayout.events.StatusChangeEvent;
     import flashx.textLayout.formats.TextLayoutFormat;
+    import flashx.textLayout.tlf_internal;
     import flashx.undo.UndoManager;
+	
+	use namespace tlf_internal;
 
     public class Core
     {
@@ -216,6 +220,26 @@ package com.queencodemonkey.tlf.texteditor
 				return null;
 		}
 		
+		public function insertImage(path:String):void
+		{
+			if (textFlow.interactionManager is IEditManager)
+			{
+				(textFlow.interactionManager as IEditManager).insertInlineGraphic(path, 100, 100);
+			}
+		}
+
+		public function createBlockQuote():void
+		{
+			if (textFlow.interactionManager is EditManager)
+			{
+				var editManager:EditManager = textFlow.interactionManager as EditManager;
+				
+				var operationState:SelectionState = editManager.defaultOperationState(operationState);
+				if (operationState)
+					editManager.doOperation(new BlockQuoteOperation(operationState));	
+			}
+		}
+		
         //------------------------------------------------------------------
         //
         //   P R O T E C T E D    M E T H O D S 
@@ -252,11 +276,21 @@ package com.queencodemonkey.tlf.texteditor
             }
             if (textFlow.interactionManager)
             {
+				textFlow.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, textFlow_inlineGraphicStatusChangeHandler); 
                 textFlow.addEventListener(SelectionEvent.SELECTION_CHANGE, textFlow_selectionChangeHandler);
                 textFlow.interactionManager.selectRange(0, 0);
                 textFlow.interactionManager.setFocus();
             }
         }
+
+		private function textFlow_inlineGraphicStatusChangeHandler(event:StatusChangeEvent):void
+		{
+			if (event.status == InlineGraphicElementStatus.SIZE_PENDING || event.status == InlineGraphicElementStatus.READY)
+			{
+				
+				textFlow.flowComposer.updateAllControllers();
+			}
+		}
 
         protected function tearDownPageDisplay():void
         {

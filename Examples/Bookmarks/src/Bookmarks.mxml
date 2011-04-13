@@ -102,12 +102,6 @@
 
             //------------------------------------------------------------------
             //
-            //  P U B L I C    M E T H O D S 
-            //
-            //------------------------------------------------------------------
-
-            //------------------------------------------------------------------
-            //
             //   P R I V A T E    M E T H O D S 
             //
             //------------------------------------------------------------------
@@ -185,8 +179,8 @@
                 textContainerManager = new TextContainerManager(page, configuration);
 
                 textFlow = TextConverter.importToFlow(textFlowData, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
-                textContainerManager.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textContainerManager_updateCompleteHandler);
-                textContainerManager.addEventListener(SelectionEvent.SELECTION_CHANGE, textContainerManager_selectionChangeHandler);
+				textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textContainerManager_updateCompleteHandler);
+				textFlow.addEventListener(SelectionEvent.SELECTION_CHANGE, textContainerManager_selectionChangeHandler);
                 textContainerManager.setTextFlow(textFlow);
                 textContainerManager.compositionWidth = page.width;
                 textContainerManager.compositionHeight = page.height;

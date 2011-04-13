@@ -43,7 +43,6 @@ package com.queencodemonkey.tlf.page.components
     import mx.styles.CSSStyleDeclaration;
 
     import spark.components.supportClasses.SkinnableComponent;
-
     /**
      * The Page class is a skinnable component that represents and displays
      * a page worth of text.
@@ -59,6 +58,7 @@ package com.queencodemonkey.tlf.page.components
          * Static variable to force setting of default styles.
          */
         private static var defaultStylesSet:Boolean = setDefaultStyles();
+
 
         //------------------------------------------------------------------
         //
@@ -83,7 +83,9 @@ package com.queencodemonkey.tlf.page.components
                 this.skinClass = PageComponentSkin;
             };
 
-            FlexGlobals.topLevelApplication.styleManager.setStyleDeclaration("com.queencodemonkey.tlf.page.components.PageComponent", pageStyles, true);
+            FlexGlobals.topLevelApplication.styleManager.setStyleDeclaration("com.queencodemonkey.tlf.page.components.PageComponent",
+                                                                             pageStyles,
+                                                                             true);
 
             return true;
         }
@@ -131,6 +133,7 @@ package com.queencodemonkey.tlf.page.components
             _updateOnResize = value;
         }
 
+
         //------------------------------------------------------------------
         //
         //  P R O T E C T E D    P R O P E R T I E S 
@@ -176,13 +179,13 @@ package com.queencodemonkey.tlf.page.components
         public function isLastPage():Boolean
         {
             return containerController && containerController.textFlow &&
-                (containerController.absoluteStart + containerController.textLength) >= containerController.textFlow.textLength;
+                (containerController.absoluteStart + containerController.textLength) == containerController.textFlow.textLength;
         }
 
         /**
          * Links the page to a text flow and sets up the page to display
          * content.
-		 * 
+         *
          * @param textFlow A TextFlow instance to connect to the page.
          */
         public function linkToTextFlow(textFlow:TextFlow, compositionWidth:Number = NaN, compositionHeight:Number = NaN):void

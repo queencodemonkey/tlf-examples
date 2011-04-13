@@ -45,9 +45,16 @@
 			
 			import flashx.textLayout.conversion.TextConverter;
 			import flashx.textLayout.edit.EditManager;
+			import flashx.textLayout.elements.Configuration;
 			import flashx.textLayout.elements.TextFlow;
+			import flashx.textLayout.events.CompositionCompleteEvent;
 			import flashx.textLayout.events.UpdateCompleteEvent;
+			import flashx.textLayout.formats.TextLayoutFormat;
 			import flashx.undo.UndoManager;
+			
+			// When importing data from XML objects, need to set this or
+			// whitespace between elements may disappear.
+			XML.ignoreWhitespace = false;
 
             /**
              * @private
@@ -119,7 +126,6 @@
             private function createPage():PageComponent
             {
                 var newPage:PageComponent = new PageComponent();
-//				newPage.setStyle("skinClass", Class(BSGPageComponentSkin));
                 newPage.width = PAGE_WIDTH;
                 newPage.height = PAGE_HEIGHT;
                 return newPage;
@@ -175,6 +181,7 @@
                     addPageButton.enabled = false;
                     removePageButton.enabled = false;
                     textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
+//					textFlow.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textFlow_compositionCompleteHandler);
                 }
                 else
                 {
@@ -182,6 +189,7 @@
                     removePageButton.enabled = pageGroup.numElements > 0;
 					if (textFlow)
                     	textFlow.removeEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
+//						textFlow.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textFlow_compositionCompleteHandler);
                 }
             }
 
@@ -215,30 +223,49 @@
              */
             private function loadButton_clickHandler(event:MouseEvent):void
             {
+				// Cleaning up any data already loaded.
                 if (textFlow)
                 {
                     textFlow.removeEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
+//					textFlow.removeEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textFlow_compositionCompleteHandler);
                 }
                 if (pageGroup.numElements > 0)
                 {
                     removeAllPages();
                 }
-                textFlow = TextConverter.importToFlow(textFlowData, TextConverter.TEXT_LAYOUT_FORMAT);
+				
+				// Setting up configuration for TextFlow import
+				var configuration:Configuration = new Configuration();
+				var initialFormat:TextLayoutFormat = new TextLayoutFormat();
+				initialFormat.paddingTop = 50;
+				initialFormat.paddingBottom = 50;
+				initialFormat.paddingLeft = 50;
+				initialFormat.paddingRight = 50;
+				configuration.textFlowInitialFormat = initialFormat;
+				
+				// Import XML to TextFlow
+                textFlow = TextConverter.importToFlow(textFlowData, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
+				
+				// If we're doing auto-pagination, add a listener so that when
+				// the last added page knows what text it will have, we can 
+				// decide if it is the last page needed.
                 if (autoPaginateCheckBox.selected)
                 {
-                    var page:PageComponent = addPage();
-//                    while (!page.isLastPage())
-//                    {
-//                        page = addPage();
-//                    }
-//                    textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
+                    addPage();
+                    textFlow.addEventListener(UpdateCompleteEvent.UPDATE_COMPLETE, textFlow_updateCompleteHandler);
+//					textFlow.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textFlow_compositionCompleteHandler);
                 }
+				// Otherwise, just add one page and enabled the add/remove page
+				// buttons.
                 else
                 {
                     addPage();
                     addPageButton.enabled = true;
                     removePageButton.enabled = true;
                 }
+				
+				// Setup the interaction manager appropriately if the user
+				// selected editable text.
                 if (editableCheckBox.selected)
                 {
                     if (!editManager)
@@ -272,9 +299,9 @@
              * excess pages.
              */
             private function textFlow_updateCompleteHandler(event:UpdateCompleteEvent):void
+//			private function textFlow_compositionCompleteHandler(event:CompositionCompleteEvent):void
             {
                 var page:PageComponent = pageGroup.getElementAt(pageGroup.numElements - 1) as PageComponent;
-//                while (!page.isLastPage() && page.textLength > 0)
                 if (!page.isLastPage())
                 {
                     page = addPage();
@@ -282,16 +309,12 @@
                 // If a page is not the first page but has a text length of 0,
                 // then it is extraneous and should be removed for
                 // auto-pagination.
-//                while (page.textLength == 0 && pageGroup.numElements > 1)
                 if (page.textLength == 0 && pageGroup.numElements > 1)
                 {
                     removePage();
-//                    page = pageGroup.getElementAt(pageGroup.numElements - 1) as PageComponent;
                 }
             }
-            // When importing data from XML objects, need to set this or
-            // whitespace between elements may disappear.
-            XML.ignoreWhitespace = false;
+			
         ]]>
     </fx:Script>
 

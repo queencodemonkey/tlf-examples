@@ -30,12 +30,12 @@
 package com.queencodemonkey.tlf.madlibs.textLayout.edit
 {
     import com.queencodemonkey.tlf.madlibs.textLayout.utils.MadLibUtil;
-
+    
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.geom.Point;
     import flash.utils.Dictionary;
-
+    
     import flashx.textLayout.compose.IFlowComposer;
     import flashx.textLayout.compose.TextFlowLine;
     import flashx.textLayout.container.ContainerController;
@@ -51,7 +51,7 @@ package com.queencodemonkey.tlf.madlibs.textLayout.edit
     import flashx.textLayout.elements.TextFlow;
     import flashx.textLayout.events.StatusChangeEvent;
     import flashx.textLayout.events.UpdateCompleteEvent;
-
+    
     import spark.components.TextInput;
 
     public class MadLibManager

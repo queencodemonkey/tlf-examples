@@ -33,6 +33,7 @@ package com.queencodemonkey.tlf.texteditor.components
     import com.queencodemonkey.tlf.texteditor.skins.FormatToolbarSkin;
     
     import flash.events.Event;
+    import flash.events.MouseEvent;
     import flash.text.engine.FontPosture;
     import flash.text.engine.FontWeight;
     
@@ -45,12 +46,14 @@ package com.queencodemonkey.tlf.texteditor.components
     import mx.core.FlexGlobals;
     import mx.styles.CSSStyleDeclaration;
     
+    import spark.components.Button;
     import spark.components.DropDownList;
     import spark.components.ToggleButton;
     import spark.components.supportClasses.SkinnableComponent;
     import spark.events.IndexChangeEvent;
 
     [Event(name="applyFormat", type="com.queencodemonkey.tlf.texteditor.events.FormatToolbarEvent")]
+	[Event(name="blockQuote", type="com.queencodemonkey.tlf.texteditor.events.FormatToolbarEvent")]
     public class FormatToolbar extends SkinnableComponent implements ICommonFormatDisplay
     {
 
@@ -126,6 +129,9 @@ package com.queencodemonkey.tlf.texteditor.components
         //   S K I N    P A R T S 
         //
         //------------------------------------------------------------------
+		
+		[SkinPart(required="true")]
+		public var blockQuote:Button;
 
         [SkinPart(required="true")]
         /**
@@ -239,6 +245,9 @@ package com.queencodemonkey.tlf.texteditor.components
 
             switch (instance)
             {
+				case blockQuote:
+					blockQuote.addEventListener(MouseEvent.CLICK, blockQuote_clickHandler);
+					break;
                 case columnCount:
                     columnCount.dataProvider = new ArrayList(COLUMN_COUNT_VALUES);
                     columnCount.selectedItem = DEFAULT_COLUMN_COUNT;
@@ -284,6 +293,11 @@ package com.queencodemonkey.tlf.texteditor.components
                     break;
             }
         }
+
+		private function blockQuote_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new FormatToolbarEvent(FormatToolbarEvent.BLOCK_QUOTE));
+		}
 
         /**
          * @inheritDoc

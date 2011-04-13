@@ -35,20 +35,22 @@ input as plain text.
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:mx="library://ns.adobe.com/flex/mx"
-               minHeight="500" minWidth="400"
                backgroundColor="0x666666"
                creationComplete="creationCompleteHandler(event)">
 
     <fx:Script>
         <![CDATA[
-            import flashx.textLayout.container.ContainerController;
-            import flashx.textLayout.conversion.TextConverter;
-            import flashx.textLayout.elements.Configuration;
-            import flashx.textLayout.elements.TextFlow;
-            import flashx.textLayout.formats.TextLayoutFormat;
-
-            import mx.events.FlexEvent;
-            import mx.events.ResizeEvent;
+			import flashx.textLayout.container.ContainerController;
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.edit.EditManager;
+			import flashx.textLayout.edit.SelectionManager;
+			import flashx.textLayout.elements.Configuration;
+			import flashx.textLayout.elements.TextFlow;
+			import flashx.textLayout.formats.TextLayoutFormat;
+			import flashx.undo.UndoManager;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
 
             //------------------------------------------------------------------
             //
@@ -61,13 +63,7 @@ input as plain text.
             private var controller:ContainerController = null;
 
             private var textFlow:TextFlow = null;
-
-            //------------------------------------------------------------------
-            //
-            //  P U B L I C    M E T H O D S 
-            //
-            //------------------------------------------------------------------
-
+			
             //------------------------------------------------------------------
             //
             //   P R I V A T E    M E T H O D S 
@@ -121,10 +117,69 @@ input as plain text.
                     textFlow.flowComposer.updateAllControllers();
                 }
             }
+
+			private function selectable_changeHandler(event:Event):void
+			{
+				// Editable
+				if(editable.selected)
+				{
+					textFlow.interactionManager = new EditManager(new UndoManager());
+				}
+				// Selectable
+				else if(selectable.selected)
+				{
+					textFlow.interactionManager = new SelectionManager();
+				}
+				// No interaction
+				else
+				{
+					textFlow.interactionManager = null;
+				}
+				drawPageComponentBackground();
+			}
+
+
+			private function editable_changeHandler(event:Event):void
+			{
+				// Selectable
+				if(editable.selected)
+				{
+					textFlow.interactionManager = new EditManager(new UndoManager());
+				}
+				// No interaction
+				else
+				{
+					textFlow.interactionManager = new SelectionManager();
+				}
+				drawPageComponentBackground();
+			}
+
         ]]>
     </fx:Script>
 
     <mx:UIComponent id="pageComponent"
                     top="50" bottom="50" left="50" right="50"
                     resize="pageComponent_resizeHandler(event)"/>
+	
+	<s:Group top="20" left="20">
+		
+		<s:layout>
+			<s:HorizontalLayout gap="5" verticalAlign="middle"/>
+		</s:layout>
+		
+		<s:Label text="selectable"
+				 color="0xCCCCCC"/>
+		
+		<s:CheckBox id="selectable"
+					change="selectable_changeHandler(event)"/>
+		
+		<s:Label text="editable"
+				 color="0xCCCCCC"/>
+		
+		<s:CheckBox id="editable"
+					enabled="{selectable.selected}"
+					change="editable_changeHandler(event)"/>
+		
+	</s:Group>
+	
 </s:Application>

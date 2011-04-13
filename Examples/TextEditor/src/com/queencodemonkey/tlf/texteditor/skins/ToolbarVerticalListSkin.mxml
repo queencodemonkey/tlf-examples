@@ -78,13 +78,12 @@
                 minViewportInset="15" hasFocusableChildren="false">
         <!--- @copy spark.components.SkinnableDataContainer#dataGroup -->
         <s:DataGroup id="dataGroup"
-                     width="100%"
-                     itemRenderer="com.queencodemonkey.tlf.texteditor.components.search.SearchResultRenderer">
+                     width="100%">
             <s:layout>
                 <!--- The default layout is vertical and measures at least for 5 rows.
                 When switching to a different layout, HorizontalLayout for example,
                 make sure to adjust the minWidth, minHeihgt sizes of the skin -->
-                <s:VerticalLayout  gap="5"/>
+                <s:VerticalLayout gap="5"/>
             </s:layout>
         </s:DataGroup>
     </s:Scroller>

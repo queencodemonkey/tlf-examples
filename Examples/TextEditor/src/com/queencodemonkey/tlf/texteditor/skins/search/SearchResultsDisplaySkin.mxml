@@ -37,6 +37,11 @@
 		[HostComponent("com.queencodemonkey.tlf.texteditor.components.search.SearchResultsDisplay")]
 	</fx:Metadata>
 	
+	<fx:Script>
+		<![CDATA[
+			import com.queencodemonkey.tlf.texteditor.components.search.SearchResultRenderer;
+		]]>
+	</fx:Script>
 	<fx:Declarations>
 		
 		<s:SolidColorStroke id="borderStroke" color="0x333333" weight="1"/>
@@ -70,6 +75,7 @@
 	<s:List id="resultList"
 			top="40" width="100%"
 			maxHeight="550"
-			skinClass="com.queencodemonkey.tlf.texteditor.skins.search.SearchResultListSkin"/>
+			itemRenderer="com.queencodemonkey.tlf.texteditor.components.search.SearchResultRenderer"
+			skinClass="com.queencodemonkey.tlf.texteditor.skins.ToolbarVerticalListSkin"/>
 	
 </s:Skin>
