@@ -32,10 +32,8 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:mx="library://ns.adobe.com/flex/mx"
-               xmlns:components="com.queencodemonkey.tlf.madlibs.components.*"
-               xmlns:sycdct="com.queencodemonkey.tlf.sycdct.*"
                width="100%" height="100%"
-               creationComplete="creationCompleteHandler(event)">
+               creationComplete="creationCompleteHandler(event)" xmlns:sycdct="com.queencodemonkey.tlf.sycdct.*" xmlns:components="com.queencodemonkey.tlf.madlibs.components.*">
 
     <fx:Script>
         <![CDATA[

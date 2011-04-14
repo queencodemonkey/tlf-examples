@@ -14,6 +14,8 @@ Framework including:
 		custom components.
 	Bookmarks: example of utilizing FTE level properties and methods in
 		conjunction with full TLF to manipulate and decorate text on a
-		line-by-line basis. 
+		line-by-line basis.
+	TextEditor: example of creating full(er) featured text editor utilizing
+		TLF. 
 	
 Again, please note that most (but not all) examples require QCMTLFLib.swc.
